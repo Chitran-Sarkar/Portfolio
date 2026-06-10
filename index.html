@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Chitran Sarkar's professional portfolio. Web Developer, ML Engineer, and Graphic Designer.">
+  <title>Chitran-Portfolio</title>
+
+  <!--
+    - favicon
+  -->
+  <link rel="icon" type="image/png" href="./assets/images/icon.png">
+
+  <!--
+    - Leaflet CSS link
+  -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <!--
+    - custom css link
+  -->
+  <link rel="stylesheet" href="./assets/css/style.css">
+
+  <!--
+    - google font link
+  -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Glegoo:wght@400;700&family=Jaini+Purva&family=Jersey+20&family=Monoton&family=Playwrite+ES:wght@100..400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik+Glitch&family=Tiny5&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script>
+    // Apply saved theme instantly to prevent flash of wrong theme
+    (function() {
+      var t = localStorage.getItem('portfolio-theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+</head>
+
+<body class="preloader-active">
+  <!-- Preloader Screen -->
+  <div id="preloader" class="preloader">
+    <div class="preloader-content">
+      <h1 class="preloader-title">Chitran Sarkar</h1>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+      <div class="loader-status"><span class="loader-label">Loading assets...</span> <span class="loader-percent">0%</span></div>
+    </div>
+  </div>
+  <div id="toastContainer" class="toast-container"></div>
+  
+  <video id="bg-video-dark" class="bg-video" autoplay loop muted playsinline poster="./assets/images/matrix.webp" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; background: #111;"><source src="./assets/css/background.webm" type="video/webm">Your browser does not support the video tag.</video>
+  <video id="bg-video-light" class="bg-video" autoplay loop muted playsinline style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; background: #f5f0e8; opacity: 0;"><source src="./assets/css/background 2.webm" type="video/webm">Your browser does not support the video tag.</video>
+  
+  <!--
+    - #SCROLLY CANVAS INTRO
+  -->
+  <div id="scrolly-container" class="scrolly-container">
+    <div class="scrolly-sticky">
+      <canvas id="scrolly-canvas"></canvas>
+      <div class="scrolly-overlay">
+        <div class="scrolly-section" id="sec-1">
+          <h1 class="parallax-text center">Chitran Sarkar.<br><span style="color: var(--orange-yellow-crayola);">Creative Developer.</span></h1>
+        </div>
+        <div class="scrolly-section" id="sec-2">
+          <h1 class="parallax-text left">I build digital experiences.</h1>
+        </div>
+        <div class="scrolly-section" id="sec-3">
+          <h1 class="parallax-text right">Bridging design and engineering.</h1>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    - #MAIN
+  -->
+  <main>
+    <div class="main">
+
+      <!--
+        - #SIDEBAR
+      -->
+
+      <aside class="sidebar" data-sidebar>
+
+        <div class="sidebar-info">
+
+          <figure class="avatar-box">
+            <img src="./assets/images/profile.avif" alt="Chitran Sarkar" id="image">
+          </figure>
+
+          <div class="info-content">
+            <h1 class="name" title="Chitran Sarkar">Chitran &nbsp; Sarkar</h1>
+
+            <p class="title">Systems Architect & Omni-Developer</p>
+          </div>
+
+          <button class="info_more-btn" data-sidebar-btn>
+            <span>Show Contacts</span>
+
+            <ion-icon name="chevron-down"></ion-icon>
+          </button>
+
+        </div>
+
+        <div class="sidebar-info_more">
+
+          <div class="separator"></div>
+
+          <ul class="contacts-list">
+
+            <li class="contact-item">
+
+              <div class="icon-box">
+                <ion-icon name="mail-outline"></ion-icon>
+              </div>
+
+              <div class="contact-info">
+                <p class="contact-title">Email</p>
+
+                <a href="mailto:sarkarchitran@gmail.com" class="contact-link">sarkarchitran@gmail.com</a>
+              </div>
+
+            </li>
+
+            <li class="contact-item">
+
+              <div class="icon-box">
+                <ion-icon name="phone-portrait-outline"></ion-icon>
+              </div>
+
+              <div class="contact-info">
+                <p class="contact-title">Phone</p>
+
+                <a href="tel:+919831089227" class="contact-link">+91 9831089227</a>
+              </div>
+
+            </li>
+
+            <li class="contact-item">
+
+              <div class="icon-box">
+                <ion-icon name="calendar-outline"></ion-icon>
+              </div>
+
+              <div class="contact-info">
+                <p class="contact-title">Birthday</p>
+
+                <time datetime="2004-04-18">April 18, 2004</time>
+              </div>
+
+            </li>
+
+            <li class="contact-item">
+
+              <div class="icon-box">
+                <ion-icon name="location-outline"></ion-icon>
+              </div>
+
+              <div class="contact-info">
+                <p class="contact-title">Location</p>
+
+                <address>Kolkata,West Bengal,India</address>
+              </div>
+
+            </li>
+
+          </ul>
+
+          <div class="separator"></div>
+
+          <ul class="social-list">
+
+            <li class="social-item">
+              <a href="https://github.com/Chitran-Sarkar" class="social-link">
+                <i class="fab fa-github" style="color: white; font-size: 20px;"></i>
+              </a>
+            </li>
+
+            <li class="social-item">
+              <a href="https://www.linkedin.com/in/chitran-sarkar" class="social-link">
+                <i class="fab fa-linkedin" style="color: white; font-size: 20px;"></i>
+              </a>
+            </li>
+
+            <li class="social-item">
+              <a href="https://www.instagram.com/_.duh.its_chitran._/" class="social-link">
+                <i class="fab fa-instagram" style="color: white; font-size: 20px;"></i>
+              </a>
+            </li>
+
+            <li class="social-item">
+              <a href="https://x.com/chitranph?s=09" class="social-link">
+                <span style="color: white; font-size: 20px; font-weight: bold;">𝕏</span>
+              </a>
+            </li>
+
+            <li class="social-item">
+              <a href="https://wa.me/9831089227" class="social-link">
+                <i class="fab fa-whatsapp" style="color: white; font-size: 20px;"></i>
+              </a>
+            </li>
+
+            <li class="social-item">
+              <a href="https://www.snapchat.com/add/chitransarkar" class="social-link">
+                <i class="fab fa-snapchat" style="color: white; font-size: 20px;"></i>
+              </a>
+            </li>
+
+            <li class="social-item">
+              <a href="https://discord.gg/chitransarkar" class="social-link">
+                <i class="fab fa-discord" style="color: white; font-size: 20px;"></i>
+              </a>
+            </li>
+          </ul>
+
+        </div>
+
+      </aside>
+
+
+
+
+
+      <!--
+        - #main-content
+      -->
+      
+      <div class="main-content">
+        <div class="Main-c">
+
+        <!--
+          - #NAVBAR
+        -->
+
+        <nav class="navbar">
+
+          <ul class="navbar-list">
+
+            <li class="navbar-item">
+              <button class="navbar-link  active" data-nav-link>About</button>
+            </li>
+
+            <li class="navbar-item">
+              <button class="navbar-link" data-nav-link>Resume</button>
+            </li>
+
+            <li class="navbar-item">
+              <button class="navbar-link" data-nav-link>Skills</button>
+            </li>
+
+            <li class="navbar-item">
+              <button class="navbar-link" data-nav-link>Project</button>
+            </li>
+
+            <li class="navbar-item">
+              <button class="navbar-link" data-nav-link>Contact</button>
+            </li>
+
+          </ul>
+
+        </nav>
+
+
+
+
+        <!--
+          - #ABOUT
+        -->
+
+        <article class="about  active" data-page="about">
+
+          <header>
+            <h2 class="h2 article-title">About me</h2>
+          </header>
+          <section id="about-head">
+              <span id="left" class="left">
+                <p class="hi">Hi, My name is <span class="h2" id="grey">Chitran</span></p>
+                <p>I am a passionate </p>          
+                <span id="element"></span>
+              </span>
+              <span id="right">
+                  <img src="./assets/images/dev.webp" alt=NA height="250">
+              </span>
+          </section>
+          <section class="about-text">
+            <details>
+              <summary>Know More!</summary>
+              <p>I am a recent BSc graduate from <b>CU</b>, where I specialized in Computer Science.<br> During my academic journey, I have gained a solid foundation in various programming languages and technologies.</p>
+              <p>My passion for computer science began at an early age, and I have pursued this interest throughout my educational career.</p>
+              <p>Throughout my college years, I have actively participated in various coding competitions and hackathons, which have not only strengthened my problem-solving abilities but also provided me with opportunities to work in collaborative environments.<br> I have successfully completed several projects, including a web-based e-commerce platform, a database management system for a local library, and a Python-based data analysis tool.</p>
+              <p>I am a quick learner, highly motivated, and always eager to expand my knowledge and skillset.<br> I thrive in dynamic environments that foster innovation and creativity.<br> My strong analytical and problem-solving skills, combined with my ability to work well in teams, make me an ideal candidate for roles in software development, data analysis, or web development.</p>
+              <p>In addition to my technical expertise, I am an avid reader and an active participant in various extracurricular activities, which have helped me develop strong interpersonal and communication skills.</p>
+              <p>I am excited about the prospect of embarking on a professional journey and contributing my skills and knowledge to a dynamic organization.<br> I am confident that my educational background, technical proficiency, and passion for computer science will enable me to make a meaningful impact in the field.</p>
+            </details>
+          </section>
+
+
+          <!--
+            - service
+          -->
+
+          <section class="service">
+
+            <h3 class="h3 service-title">What i'm doing</h3>
+
+            <ul class="service-list">
+
+              <li class="service-item">
+
+                <div class="service-icon-box">
+                  <i class="fas fa-paint-brush" style="font-size:40px;color:#FFBC5E;"></i>
+                </div>
+
+                <div class="service-content-box">
+                  <h4 class="h4 service-item-title">Web design</h4>
+
+                  <p class="service-item-text">
+                    The most modern and high-quality design made at a professional level.
+                  </p>
+                </div>
+
+              </li>
+
+              <li class="service-item">
+
+                <div class="service-icon-box">
+                  <i class="fas fa-code" style="font-size:40px;color:#FFBC5E;"></i>
+                </div>
+
+                <div class="service-content-box">
+                  <h4 class="h4 service-item-title">Web development</h4>
+
+                  <p class="service-item-text">
+                    High-quality development of sites at the professional level.
+                  </p>
+                </div>
+
+              </li>
+
+              <li class="service-item">
+
+                <div class="service-icon-box">
+                  <i class="fas fa-mobile-alt" style="font-size:40px;color:#FFBC5E;"></i>
+                </div>
+
+                <div class="service-content-box">
+                  <h4 class="h4 service-item-title">Mobile apps</h4>
+
+                  <p class="service-item-text">
+                    Professional development of applications for iOS and Android.
+                  </p>
+                </div>
+
+              </li>
+
+              <li class="service-item">
+                <div class="service-icon-box">
+                  <i class="fas fa-desktop" style="font-size:40px;color:#FFBC5E;"></i>
+                </div>
+                <div class="service-content-box">
+                  <h4 class="h4 service-item-title">Desktop Apps</h4>
+                  <p class="service-item-text">
+                    Creating powerful desktop applications with modern frameworks and technologies.
+                  </p>
+                </div>
+              </li>
+
+              <li class="service-item">
+                <div class="service-icon-box">
+                  <i class="fas fa-brain" style="font-size:40px;color:#FFBC5E;"></i>
+                </div>
+                <div class="service-content-box">
+                  <h4 class="h4 service-item-title">Machine Learning</h4>
+                  <p class="service-item-text">
+                    Building intelligent systems and predictive models using data-driven techniques.
+                  </p>
+                </div>
+              </li>
+
+              <li class="service-item">
+                <div class="service-icon-box">
+                  <i class="fas fa-robot" style="font-size:40px;color:#FFBC5E;"></i>
+                </div>
+                <div class="service-content-box">
+                  <h4 class="h4 service-item-title">LLM training</h4>
+                  <p class="service-item-text">
+                    Training and fine-tuning large language models for advanced AI applications.
+                  </p>
+                </div>
+              </li>
+
+              <li class="service-item">
+                <div class="service-icon-box">
+                  <i class="fas fa-microchip" style="font-size:40px;color:#FFBC5E;"></i>
+                </div>
+                <div class="service-content-box">
+                  <h4 class="h4 service-item-title">IoT & Robotics</h4>
+                  <p class="service-item-text">
+                    Embedded Systems Enthusiast bridging hardware and software seamlessly.
+                  </p>
+                </div>
+              </li>
+
+              <li class="service-item">
+                <div class="service-icon-box">
+                  <i class="fas fa-cloud" style="font-size:40px;color:#FFBC5E;"></i>
+                </div>
+                <div class="service-content-box">
+                  <h4 class="h4 service-item-title">Cloud Architect</h4>
+                  <p class="service-item-text">
+                    Designing scalable cloud infrastructure and solutions for modern applications.
+                  </p>
+                </div>
+              </li>
+
+            </ul>
+
+          </section>
+
+        <div class="container1 footer">
+          <p>&copy; 2024 Chitran Sarkar |</p> <a href="#top">Back to top</a>
+        </div> 
+        <svg class="foot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+          <path class="wavePath" fill="#deb887" fill-opacity="0.5">
+            <animate attributeName="d" dur="6s" repeatCount="indefinite"
+              values="M0,160 C360,320 1080,0 1440,160 L1440,320 L0,320 Z;
+                      M0,120 C360,240 1080,80 1440,120 L1440,320 L0,320 Z;
+                      M0,160 C360,320 1080,0 1440,160 L1440,320 L0,320 Z" />
+          </path>
+        </svg>
+        </article>
+
+
+
+
+
+        <!--
+          - #RESUME
+        -->
+
+        <article class="resume" data-page="resume">
+
+          <header>
+            <h2 class="h2 article-title">Resume</h2>
+          </header>
+
+          <section class="timeline">
+
+            <div class="title-wrapper">
+              <div class="icon-box">
+                <ion-icon name="book-outline"></ion-icon>
+              </div>
+
+              <h3 class="h3">Education</h3>
+            </div>
+
+            <div class="timeline-content">
+    <ol class="timeline-list">
+
+              <li class="timeline-item">
+
+                <h4 class="h4 timeline-item-title"><a href="https://www.behalacollege.in/website/">BEHALA College</a>,Calcutta University</h4>
+
+                <span>2022 — 2026</span>
+
+                <p class="timeline-text">
+                  Completed bachelor degree in Computer Science(BSc).
+                </p>
+
+              </li>
+
+              <li class="timeline-item">
+
+                <h4 class="h4 timeline-item-title"><a href="http://sonarpur.futurecampusschool.in/">Future Campus School</a> ,CBSE </h4>
+
+                <span>2020 — 2022</span>
+
+                <p class="timeline-text">
+                  Completed schooling till Higher Secondary standard ( 12 <sup>th</sup> ) .
+                </p>
+
+              </li>
+
+              <li class="timeline-item">
+
+                <h4 class="h4 timeline-item-title"><a href="https://www.bdmi.org/">B.D.M.I</a> ,CBSE</h4>
+
+                <span>2009 — 2020</span>
+
+                <p class="timeline-text">
+                  Completed schooling till Secondary standard ( 10 <sup>th</sup> ) .
+                </p>
+
+              </li>
+
+            </ol>
+    <img src="./assets/images/ed.webp" alt="Education illustration" height="250" class="timeline-image">
+</div>
+
+          </section>
+        <div class="container1 footer">
+          <p>&copy; 2024 Chitran Sarkar |</p> <a href="#top">Back to top</a>
+        </div> 
+        <svg class="foot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+          <path class="wavePath" fill="#deb887" fill-opacity="0.5">
+            <animate attributeName="d" dur="6s" repeatCount="indefinite"
+              values="M0,160 C360,320 1080,0 1440,160 L1440,320 L0,320 Z;
+                      M0,120 C360,240 1080,80 1440,120 L1440,320 L0,320 Z;
+                      M0,160 C360,320 1080,0 1440,160 L1440,320 L0,320 Z" />
+          </path>
+        </svg>
+
+        </article>
+
+        <article class="skills" data-page="skills">
+          
+            <header>
+              <h2 class="h2 article-title">Skills</h2>
+            </header>
+            <section class="skills-filter-buttons">
+              <ul class="filter-list">
+                <li class="filter-item"><button class="skills-filter-btn active" data-skill-filter="technical">Technical Skills</button></li>
+                <li class="filter-item"><button class="skills-filter-btn" data-skill-filter="programming">Programming Languages</button></li>
+                <li class="filter-item"><button class="skills-filter-btn" data-skill-filter="soft">Soft Skills</button></li>
+              </ul>
+              <div class="filter-select-box">
+                <button class="filter-select" data-skill-select>
+                  <div class="select-value" data-skill-select-value>Technical Skills</div>
+                  <div class="select-icon">
+                    <ion-icon name="chevron-down"></ion-icon>
+                  </div>
+                </button>
+                <ul class="select-list">
+                  <li class="select-item"><button data-skill-select-item>Technical Skills</button></li>
+                  <li class="select-item"><button data-skill-select-item>Programming Languages</button></li>
+                  <li class="select-item"><button data-skill-select-item>Soft Skills</button></li>
+                </ul>
+              </div>
+            </section>
+            <section id="technical-skills-section" data-skill-category="technical">
+
+              
+              <ul class="skills-list content-card">
+                  <li class="skills-item">
+                    <div class="title-wrapper">
+                      <h5 class="h5">💻 Programming Languages</h5>
+                      <data value="70" id="f">70%</data>
+                    </div>
+                    <div class="skill-progress-bg">
+                      <div class="skill-progress-fill"><div class="front" id="front"></div></div>
+                    </div>
+                  </li>
+                  <li class="skills-item">
+                    <div class="title-wrapper">
+                      <h5 class="h5">🔬 AI / ML / Data Science</h5>
+                      <data value="70" id="b">70%</data>
+                    </div>
+                    <div class="skill-progress-bg">
+                      <div class="skill-progress-fill"><div class="back" id="back"></div></div>
+                    </div>
+                  </li>
+                  <li class="skills-item">
+                    <div class="title-wrapper">
+                      <h5 class="h5">🌐 Web design</h5>
+                      <data value="80" id="wd">80%</data>
+                    </div>
+                    <div class="skill-progress-bg">
+                      <div class="skill-progress-fill"><div class="web" id="web"></div></div>
+                    </div>
+                  </li>
+                  <li class="skills-item">
+                    <div class="title-wrapper">
+                      <h5 class="h5">🎨 Graphic design</h5>
+                      <data value="70" id="gd">70%</data>
+                    </div>
+                    <div class="skill-progress-bg">
+                      <div class="skill-progress-fill"><div class="graph" id="graph"></div></div>
+                    </div>
+                  </li>
+                  <li class="skills-item">
+                    <div class="title-wrapper">
+                      <h5 class="h5">🤖 Hardware & Design</h5>
+                      <data value="80" id="br">80%</data>
+                    </div>
+                    <div class="skill-progress-bg">
+                      <div class="skill-progress-fill"><div id="brand"></div></div>
+                    </div>
+                  </li>
+                  <li class="skills-item">
+                    <div class="title-wrapper">
+                      <h5 class="h5">🧰 Tools & Platforms</h5>
+                      <data value="90" id="wr">90%</data>
+                    </div>
+                    <div class="skill-progress-bg">
+                      <div class="skill-progress-fill"><div id="word"></div></div>
+                    </div>
+                  </li>
+                  <li class="skills-item">
+                    <div class="title-wrapper">
+                      <h5 class="h5">🛠️ Dev-Ops</h5>
+                      <data value="50" id="de">50%</data>
+                    </div>
+                    <div class="skill-progress-bg">
+                      <div class="skill-progress-fill"><div id="dev"></div></div>
+                    </div>
+                  </li>
+                </ul>
+            </section>
+            <br>
+            <section id="programming-languages-section" data-skill-category="programming">
+              <div class="skills-container">
+                <div class="skills-list content-card">
+                  <h4 class="skills">Core Languages</h4>
+                  <div class="skills-grid">
+                    <div class="skill"><i class="fab fa-python"></i> Python</div>
+                    <div class="skill"><i class="fas fa-code"></i> C</div>
+                    <div class="skill"><i class="fab fa-java"></i> Java</div>
+                    <div class="skill"><i class="fas fa-code"></i> C++</div>
+                    <div class="skill"><i class="fas fa-feather-alt"></i> Cython</div>
+                    <div class="skill"><i class="fas fa-gamepad"></i> Pygame</div>
+                    <div class="skill"><i class="fas fa-window-maximize"></i> PyQt</div>
+                    <div class="skill"><i class="fas fa-camera"></i> OpenCV</div>
+                  </div>
+                </div>
+                <div class="skills-list content-card">
+                  <h4 class="skills">Data Science & ML</h4>
+                  <div class="skills-grid">
+                    <div class="skill"><i class="fas fa-square-root-alt"></i> Numpy</div>
+                    <div class="skill"><i class="fas fa-table"></i> Pandas</div>
+                    <div class="skill"><i class="fas fa-brain"></i> Tensorflow</div>
+                    <div class="skill"><i class="fas fa-brain"></i> Keras</div>
+                    <div class="skill"><i class="fas fa-bolt"></i> Numba</div>
+                    <div class="skill"><i class="fas fa-fire"></i> PyTorch</div>
+                    <div class="skill"><i class="fas fa-cube"></i> ONNX</div>
+                  </div>
+                </div>
+                <div class="skills-list content-card">
+                  <h4 class="skills">Embedded Systems</h4>
+                  <div class="skills-grid">
+                    <div class="skill"><i class="fas fa-code"></i> C</div>
+                    <div class="skill"><i class="fas fa-code"></i> C++</div>
+                    <div class="skill"><i class="fab fa-python"></i> MicroPython</div>
+                    <div class="skill"><i class="fas fa-plug"></i> PySerial</div>
+                    <div class="skill"><i class="fas fa-microchip"></i> PyFirmata</div>
+                  </div>
+                </div>
+                <div class="skills-list content-card">
+                  <h4 class="skills">Scripting</h4>
+                  <div class="skills-grid">
+                    <div class="skill"><i class="fab fa-python"></i> Python</div>
+                    <div class="skill"><i class="fas fa-terminal"></i> Bash</div>
+                  </div>
+                </div>
+                <div class="skills-list content-card">
+                  <h4 class="skills">Frontend Development</h4>
+                  <div class="skills-grid">
+                    <div class="skill"><i class="fab fa-html5"></i> HTML</div>
+                    <div class="skill"><i class="fab fa-css3-alt"></i> CSS</div>
+                    <div class="skill"><i class="fab fa-js"></i> JavaScript</div>
+                    <div class="skill"><i class="fab fa-react"></i> React</div>
+                    <div class="skill"><i class="fab fa-bootstrap"></i> Bootstrap</div>
+                    <div class="skill"><i class="fab fa-js"></i> TypeScript</div>
+                    <div class="skill"><i class="fas fa-paint-brush"></i> Tailwind CSS</div>
+                  </div>
+                </div>
+                <div class="skills-list content-card">
+                  <h4 class="skills">Backend Development</h4>
+                  <div class="skills-grid">
+                    <div class="skill"><i class="fab fa-node-js"></i> Node.js</div>
+                    <div class="skill"><i class="fab fa-php"></i> PHP</div>
+                    <div class="skill"><i class="fab fa-python"></i> Django</div>
+                    <div class="skill"><i class="fas fa-flask"></i> Flask</div>
+                    <div class="skill"><i class="fas fa-database"></i> MongoDB</div>
+                    <div class="skill"><i class="fas fa-database"></i> MySQL</div>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section id="soft-skills-section" data-skill-category="soft">
+              <ul class="skill-list">    
+                  <li>Team Leadership</li>
+                  <li>Project Management</li>
+                  <li>Agile Methodologies</li>
+                  <li>Communication</li>
+                </ul>
+            </section>
+          
+          
+          <div class="container1 footer">
+            <p>&copy; 2024 Chitran Sarkar |</p> <a href="#top">Back to top</a>
+          </div> 
+          <svg class="foot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+            <path class="wavePath" fill="#deb887" fill-opacity="0.5">
+              <animate attributeName="d" dur="6s" repeatCount="indefinite"
+                values="M0,160 C360,320 1080,0 1440,160 L1440,320 L0,320 Z;
+                        M0,120 C360,240 1080,80 1440,120 L1440,320 L0,320 Z;
+                        M0,160 C360,320 1080,0 1440,160 L1440,320 L0,320 Z" />
+            </path>
+          </svg>
+          
+        </article>
+
+
+
+
+        <!--
+          - #PORTFOLIO
+        -->
+
+        <article class="portfolio" data-page="project">
+
+          <header>
+            <h2 class="h2 article-title">Portfolio</h2>
+          </header>
+
+          <section class="projects">
+
+            <ul class="filter-list">
+
+              <li class="filter-item">
+                <button class="skills-filter-btn active" data-filter-btn>All</button>
+              </li>
+
+              <li class="filter-item">
+                <button class="skills-filter-btn" data-filter-btn>Hybrid Application</button>
+              </li>
+
+              <li class="filter-item">
+                <button class="skills-filter-btn" data-filter-btn>Applications</button>
+              </li>
+
+              <li class="filter-item">
+                <button class="skills-filter-btn" data-filter-btn>Web development</button>
+              </li>
+
+              <li class="filter-item">
+                <button class="skills-filter-btn" data-filter-btn>Embedded Systems</button>
+              </li>
+
+              <li class="filter-item">
+                <button class="skills-filter-btn" data-filter-btn>AI/ML Development</button>
+              </li>
+
+            </ul>
+
+            <div class="filter-select-box">
+
+              <button class="filter-select" data-select>
+
+                <div class="select-value" data-select-value>Select category</div>
+
+                <div class="select-icon">
+                  <ion-icon name="chevron-down"></ion-icon>
+                </div>
+
+              </button>
+
+              <ul class="select-list">
+
+                <li class="select-item">
+                  <button data-select-item>All</button>
+                </li>
+
+                <li class="select-item">
+                  <button data-select-item>Hybrid Application</button>
+                </li>
+
+                <li class="select-item">
+                  <button data-select-item>Applications</button>
+                </li>
+
+                <li class="select-item">
+                  <button data-select-item>Web development</button>
+                </li>
+
+                <li class="select-item">
+                  <button data-select-item>Embedded Systems</button>
+                </li>
+
+                <li class="select-item">
+                  <button data-select-item>AI/ML Development</button>
+                </li>
+
+              </ul>
+
+            </div>
+
+            <ul class="project-list">
+
+              <li class="project-item  active" data-filter-item data-category="web development">
+                <a href="#">
+
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+
+                    <img src="./assets/images/project-1.webp" alt="finance" loading="lazy">
+                  </figure>
+
+                  <h3 class="project-title">Finance</h3>
+
+                  <p class="project-category">Web development</p>
+
+                </a>
+              </li>
+
+              <li class="project-item  active" data-filter-item data-category="web development">
+                <a href="#">
+
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+
+                    <img src="./assets/images/project-2.webp" alt="orizon" loading="lazy">
+                  </figure>
+
+                  <h3 class="project-title">Orizon</h3>
+
+                  <p class="project-category">Web development</p>
+
+                </a>
+              </li>
+
+              <li class="project-item  active" data-filter-item data-category="ai/ml development">
+                <a href="#">
+
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+
+                    <img src="./assets/images/project-3.webp" alt="fundo" loading="lazy">
+                  </figure>
+
+                  <h3 class="project-title">Fundo</h3>
+
+                  <p class="project-category">AI/ML Development</p>
+
+                </a>
+              </li>
+
+              <li class="project-item  active" data-filter-item data-category="applications">
+                <a href="https://github.com/Chitran-Sarkar/Super_Mario" target="_blank" rel="noopener">
+
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+
+                    <img src="./assets/images/project-4.webp" alt="brawlhalla" loading="lazy">
+                  </figure>
+
+                  <h3 class="project-title">Super Mario</h3>
+
+                  <p class="project-category">Applications</p>
+
+                </a>
+              </li>
+
+              <li class="project-item  active" data-filter-item data-category="embedded systems">
+                <a href="#">
+
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+
+                    <img src="./assets/images/project-5.webp" alt="dsm." loading="lazy">
+                  </figure>
+
+                  <h3 class="project-title">DSM.</h3>
+
+                  <p class="project-category">Embedded Systems</p>
+
+                </a>
+              </li>
+
+              <li class="project-item  active" data-filter-item data-category="hybrid application">
+                <a href="https://github.com/Chitran-Sarkar/Garbage_Detector" target="_blank" rel="noopener">
+
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+
+                    <img src="./assets/images/project-6.webp" alt="metaspark" loading="lazy">
+                  </figure>
+
+                  <h3 class="project-title">Garbage Detector</h3>
+
+                  <p class="project-category">Hybrid Application</p>
+
+                </a>
+              </li>
+
+              <li class="project-item  active only-category" data-filter-item data-category="applications">
+                <a href="https://github.com/Chitran-Sarkar/Garbage_Detector" target="_blank" rel="noopener">
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+                    <img src="./assets/images/project-6.webp" alt="garbage detector" loading="lazy">
+                  </figure>
+                  <h3 class="project-title">Garbage Detector</h3>
+                  <p class="project-category">Applications</p>
+                </a>
+              </li>
+
+              <li class="project-item  active only-category" data-filter-item data-category="web development">
+                <a href="https://github.com/Chitran-Sarkar/Garbage_Detector" target="_blank" rel="noopener">
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+                    <img src="./assets/images/project-6.webp" alt="garbage detector" loading="lazy">
+                  </figure>
+                  <h3 class="project-title">Garbage Detector</h3>
+                  <p class="project-category">Web development</p>
+                </a>
+              </li>
+
+              <li class="project-item  active only-category" data-filter-item data-category="ai/ml development">
+                <a href="https://github.com/Chitran-Sarkar/Garbage_Detector" target="_blank" rel="noopener">
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+                    <img src="./assets/images/project-6.webp" alt="garbage detector" loading="lazy">
+                  </figure>
+                  <h3 class="project-title">Garbage Detector</h3>
+                  <p class="project-category">AI/ML Development</p>
+                </a>
+              </li>
+
+              <li class="project-item  active only-category" data-filter-item data-category="embedded systems">
+                <a href="https://github.com/Chitran-Sarkar/Garbage_Detector" target="_blank" rel="noopener">
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+                    <img src="./assets/images/project-6.webp" alt="garbage detector" loading="lazy">
+                  </figure>
+                  <h3 class="project-title">Garbage Detector</h3>
+                  <p class="project-category">Embedded Systems</p>
+                </a>
+              </li>
+
+              <li class="project-item  active" data-filter-item data-category="web development">
+                <a href="#">
+
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+
+                    <img src="./assets/images/project-7.webp" alt="summary" loading="lazy">
+                  </figure>
+
+                  <h3 class="project-title">Summary</h3>
+
+                  <p class="project-category">Web development</p>
+
+                </a>
+              </li>
+
+              <li class="project-item  active" data-filter-item data-category="applications">
+                <a href="#">
+
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+
+                    <img src="./assets/images/project-8.webp" alt="task manager" loading="lazy">
+                  </figure>
+
+                  <h3 class="project-title">Task Manager</h3>
+
+                  <p class="project-category">Applications</p>
+
+                </a>
+              </li>
+
+              <li class="project-item  active" data-filter-item data-category="web development">
+                <a href="#">
+
+                  <figure class="project-img">
+                    <div class="project-item-icon-box">
+                      <ion-icon name="eye-outline"></ion-icon>
+                    </div>
+
+                    <img src="./assets/images/project-9.webp" alt="arrival" loading="lazy">
+                  </figure>
+
+                  <h3 class="project-title">Arrival</h3>
+
+                  <p class="project-category">Web development</p>
+
+                </a>
+              </li>
+
+            </ul>
+
+          </section>
+
+        <div class="container1 footer">
+          <p>&copy; 2024 Chitran Sarkar |</p> <a href="#top">Back to top</a>
+        </div> 
+        <svg class="foot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+          <path class="wavePath" fill="#deb887" fill-opacity="0.5">
+            <animate attributeName="d" dur="6s" repeatCount="indefinite"
+              values="M0,160 C360,320 1080,0 1440,160 L1440,320 L0,320 Z;
+                        M0,120 C360,240 1080,80 1440,120 L1440,320 L0,320 Z;
+                        M0,160 C360,320 1080,0 1440,160 L1440,320 L0,320 Z" />
+          </path>
+        </svg>
+          
+          
+        </article>
+
+
+
+
+
+        <!--
+          - #CONTACT
+        -->
+
+        <article class="contact" data-page="contact">
+
+          <header>
+            <h2 class="h2 article-title">Get in Touch</h2>
+          </header>
+
+          <section class="mapbox" data-mapbox>
+            <div id="map" style="width: 100%; height: 100%;"></div>
+          </section>
+
+          <section class="contact-form">
+
+            <h3 class="h3 form-title">Contact Form</h3>
+
+            <form action="#" class="form" data-form>
+
+              <div class="input-wrapper">
+                <input type="text" name="fullname" class="form-input" placeholder="Full name" required data-form-input>
+                <input type="email" name="email" class="form-input" placeholder="Email address" required data-form-input>
+              </div>
+            
+              <textarea name="message" class="form-input" placeholder="Your Message" required data-form-input></textarea>
+            
+              <button class="form-btn" type="submit" disabled data-form-btn>
+                <ion-icon name="paper-plane"></ion-icon>
+                <span>Send Message</span>
+              </button>
+            
+            </form>
+            
+
+          </section>
+        
+          <div class="container1 footer">
+            <p>&copy; 2024 Chitran Sarkar |</p> <a href="#top">Back to top</a>
+          </div> 
+          <svg class="foot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+            <path class="wavePath" fill="#deb887" fill-opacity="0.5">
+              <animate attributeName="d" dur="6s" repeatCount="indefinite"
+                values="M0,160 C360,320 1080,0 1440,160 L1440,320 L0,320 Z;
+                        M0,120 C360,240 1080,80 1440,120 L1440,320 L0,320 Z;
+                        M0,160 C360,320 1080,0 1440,160 L1440,320 L0,320 Z" />
+            </path>
+          </svg>
+
+        </article>
+        </div>
+        </div>
+      
+    </div>
+    
+  </main>
+
+ <!-- Update EmailJS SDK to the latest version -->
+<script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+</script>
+
+
+  <!-- Matter.js Physics Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+
+  <!--
+    - Leaflet JS link
+  -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!--
+    - custom js link
+  -->
+  <script src="./assets/js/script.js"></script>
+
+
+  <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
+
+   <!-- Setup and start animation! -->
+   <script>
+    var typed = new Typed('#element', {
+      strings: ['ML Engineer.','App Developer.', 'Graphic Designer.','Web Designer.','Web Developer.','Arduino Developer.','Photographer.','Artist.'],
+      typeSpeed: 50,
+      loop: true
+    });
+  </script>
+
+  <!--
+    - ionicon link
+  -->
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+  <!-- Theme Toggle Button -->
+  <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light/dark mode" title="Toggle theme">
+    <div class="toggle-track">
+      <span class="toggle-icon toggle-sun">
+        <i class="fas fa-sun"></i>
+      </span>
+      <span class="toggle-icon toggle-moon">
+        <i class="fas fa-moon"></i>
+      </span>
+      <div class="toggle-thumb"></div>
+    </div>
+  </button>
+
+  <!-- Toast notification container -->
+  <div class="toast-container" id="toastContainer"></div>
+</body>
+
+</html>
