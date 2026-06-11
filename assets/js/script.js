@@ -306,8 +306,20 @@ if (preloader) {
       const img = new Image();
       img.src = getFrameUrl(i);
       img.onload = () => {
-        loaded++;
-        updateProgress();
+        if (typeof img.decode === 'function') {
+          img.decode()
+            .then(() => {
+              loaded++;
+              updateProgress();
+            })
+            .catch(() => {
+              loaded++;
+              updateProgress();
+            });
+        } else {
+          loaded++;
+          updateProgress();
+        }
       };
       img.onerror = () => {
         loaded++;
@@ -472,7 +484,18 @@ if (canvas && scrollyContainer) {
     }
   }
 
-  window.addEventListener('scroll', updateScrolly);
+  let isTicking = false;
+  function handleScroll() {
+    if (!isTicking) {
+      window.requestAnimationFrame(() => {
+        updateScrolly();
+        isTicking = false;
+      });
+      isTicking = true;
+    }
+  }
+
+  window.addEventListener('scroll', handleScroll);
   window.addEventListener('resize', resizeCanvas);
 }
 // ---- 2. Navbar sliding underline setup ----
@@ -626,8 +649,9 @@ if (skillFilterButtons.length > 0) {
     });
   }
 
-  // ---- 6. EmailJS and Form validation setup ----
-  emailjs.init('ROw1J6izzdoSEwL1_');
+  // ---- 6. Web3Forms and Form validation setup ----
+  // Get your free Web3Forms Access Key here: https://web3forms.com/
+  const WEB3FORMS_ACCESS_KEY = "a5a7986d-d5c4-4313-8969-5f55b6981ccb"; 
 
   const form = document.querySelector("[data-form]");
   const submitButton = document.querySelector("[data-form-btn]");
@@ -651,34 +675,52 @@ if (skillFilterButtons.length > 0) {
     form.addEventListener('submit', function (event) {
       event.preventDefault();
 
+      if (WEB3FORMS_ACCESS_KEY === "YOUR_ACCESS_KEY_HERE") {
+        showToast('Please set your Web3Forms Access Key in script.js first!', 'error');
+        return;
+      }
+
       // Retrieve form data
-      const formData = {
-        fullname: form.querySelector('input[name="fullname"]').value,
-        email: form.querySelector('input[name="email"]').value,
-        message: form.querySelector('textarea[name="message"]').value,
-      };
+      const fullname = form.querySelector('input[name="fullname"]').value;
+      const email = form.querySelector('input[name="email"]').value;
+      const message = form.querySelector('textarea[name="message"]').value;
 
       if (submitButton) {
         submitButton.setAttribute("disabled", "true");
         submitButton.innerText = "Sending...";
       }
 
-      // Send the email using EmailJS
-      emailjs.send('service_ohuxkpx', 'template_5x7oaf3', {
-        to_name: "Chitran",
-        from_name: formData.fullname,
-        to_mail: formData.email,
-        message_html: formData.message
+      // Send the email using Web3Forms
+      fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_ACCESS_KEY,
+          name: fullname,
+          email: email,
+          subject: "New Message from Portfolio Contact Form",
+          message: message
+        })
       })
-      .then(function (response) {
-        showToast('Your message has been sent successfully!', 'success');
-        form.reset();
-        updateButtonState();
-        if (submitButton) submitButton.innerHTML = '<ion-icon name="paper-plane"></ion-icon><span>Send Message</span>';
-      }, function (error) {
+      .then(async (response) => {
+        let json = await response.json();
+        if (response.status === 200) {
+          showToast('Your message has been sent successfully!', 'success');
+          form.reset();
+          updateButtonState();
+        } else {
+          console.error('Web3Forms Error Response:', json);
+          showToast(json.message || 'Failed to send the message. Please try again.', 'error');
+        }
+      })
+      .catch((error) => {
         console.error('FAILED...', error);
         showToast('Failed to send the message. Please try again.', 'error');
-        updateButtonState();
+      })
+      .finally(() => {
         if (submitButton) submitButton.innerHTML = '<ion-icon name="paper-plane"></ion-icon><span>Send Message</span>';
       });
     });
