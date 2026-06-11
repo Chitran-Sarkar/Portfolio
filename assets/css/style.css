@@ -76,14 +76,14 @@
   --ff-poppins: 'Poppins', sans-serif;
 
   /* font-size */
-  --fs-1: 24px;
-  --fs-2: 18px;
-  --fs-3: 17px;
-  --fs-4: 16px;
-  --fs-5: 15px;
-  --fs-6: 14px;
-  --fs-7: 13px;
-  --fs-8: 11px;
+  --fs-1: clamp(24px, 2.5vw + 14px, 36px);
+  --fs-2: clamp(18px, 1.5vw + 12px, 24px);
+  --fs-3: clamp(17px, 1.2vw + 11px, 22px);
+  --fs-4: clamp(15px, 1vw + 11px, 18px);
+  --fs-5: clamp(14px, 0.8vw + 11px, 16px);
+  --fs-6: clamp(13px, 0.6vw + 11px, 15px);
+  --fs-7: clamp(12px, 0.5vw + 11px, 14px);
+  --fs-8: clamp(10px, 0.4vw + 10px, 12px);
 
   /* font-weight */
   --fw-300: 300;
@@ -140,7 +140,7 @@ h3{
   font-family: "Rubik Glitch", system-ui;
   font-weight: 400;
   font-style: normal;
-  font-size: 200%;
+  font-size: clamp(1.5rem, 1.5vw + 1rem, 2rem);
 }
 
 .skills h4{
@@ -168,7 +168,7 @@ h3{
   font-family: "Jersey 20", sans-serif;
   font-weight: 400;
   font-style: normal;
-  font-size: 300%;
+  font-size: clamp(1.8rem, 2.5vw + 1rem, 3rem);
 }
 
 button {
@@ -255,7 +255,7 @@ article {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 16px;
+  font-size: clamp(14px, 0.5vw + 12px, 16px);
   color: var(--orange-yellow-crayola);
   box-shadow: var(--shadow-1);
   z-index: 1;
@@ -269,12 +269,7 @@ article {
 }
 
 }
-@media (max-width: 415px){
-  .avatar-box {
-    margin-left: 50px;
-  }
 
-}
 @media (max-width: 513px){
   .skills-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -502,9 +497,11 @@ mask-clip: border-box;
   background: var(--onyx);
   font-size: var(--fs-8);
   font-weight: var(--fw-300);
-  width: max-content;
+  width: fit-content;
+  max-width: 100%;
   padding: 3px 12px;
   border-radius: 8px;
+  margin-inline: auto;
 }
 
 .info_more-btn {
@@ -512,7 +509,7 @@ mask-clip: border-box;
   top: -15px;
   right: -15px;
   border-radius: 0 15px;
-  font-size: 13px;
+  font-size: clamp(11px, 0.3vw + 10px, 13px);
   color: var(--orange-yellow-crayola);
   background: var(--border-gradient-onyx);
   padding: 10px;
@@ -593,7 +590,7 @@ mask-clip: border-box;
 
 .social-item .social-link {
   color: var(--light-gray-70);
-  font-size: 18px;
+  font-size: clamp(15px, 0.5vw + 13px, 18px);
   transition: all var(--transition-1);
   display: inline-block;
 }
@@ -636,7 +633,7 @@ mask-clip: border-box;
 .navbar-link {
   cursor: none;
   color: var(--light-gray);
-  font-size: 150%;
+  font-size: clamp(1rem, 1.2vw + 0.6rem, 1.5rem);
   padding: 20px 7px;
   transition: color var(--transition-1);
   font-family: "Jaini Purva", system-ui;
@@ -665,7 +662,7 @@ mask-clip: border-box;
 
 .about-text  {
   color: var(--light-gray);
-  font-size: 120%;
+  font-size: clamp(0.9rem, 0.8vw + 0.7rem, 1.2rem);
   line-height: 1.6;
 }
 
@@ -694,8 +691,18 @@ summary{
 }
 #left, #right {
   padding-top: 5%;
-  font-size: 2.5rem;
+  font-size: clamp(1.5rem, 2vw + 1rem, 2.5rem);
   display: inline-block;
+}
+#right img {
+  height: clamp(120px, 20vw + 60px, 250px);
+  width: auto;
+  max-width: 100%;
+}
+.timeline-image {
+  height: clamp(120px, 20vw + 60px, 250px);
+  width: auto;
+  max-width: 100%;
 }
 #left{
   width: 65%;
@@ -722,10 +729,10 @@ summary{
   font-family: Vivaldi, serif;
   font-weight: 400;
   letter-spacing: 5px;
-  font-size: 4.5rem;
+  font-size: clamp(2.5rem, 4vw + 1rem, 4.5rem);
 }
 #element{
-  font-size: 2.5rem;
+  font-size: clamp(1.5rem, 2vw + 1rem, 2.5rem);
 }
 
 /**
@@ -938,7 +945,7 @@ summary{
   justify-content: center;
   align-items: center;
   color: var(--white-2);
-  font-size: 18px;
+  font-size: clamp(15px, 0.5vw + 13px, 18px);
   opacity: 0.7;
 }
 
@@ -1178,7 +1185,7 @@ summary{
 
 .skills-list.content-card h4{
   color: #4a5066;
-  font-size: 200%;
+  font-size: clamp(1.5rem, 1.5vw + 1rem, 2rem);
 }
 .skills-list.content-card {
   flex: 1 1 30%; /* Adjust the width as needed */
@@ -1251,6 +1258,7 @@ summary{
 .filter-select-box {
   position: relative;
   margin-bottom: 25px;
+  margin-top: 50px;
 }
 
 .filter-select {
@@ -1356,7 +1364,7 @@ summary{
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%) scale(var(--scale));
-  font-size: 20px;
+  font-size: clamp(16px, 0.6vw + 14px, 20px);
   padding: 18px;
   border-radius: 12px;
   opacity: 0;
@@ -1594,7 +1602,7 @@ textarea.form-input::-webkit-resizer { display: none; }
   transition: var(--transition-1);
 }
 
-.form-btn ion-icon { font-size: 16px; }
+.form-btn ion-icon { font-size: clamp(14px, 0.4vw + 12px, 16px); }
 
 .form-btn:hover { background: var(--bg-gradient-yellow-1); }
 
@@ -1697,7 +1705,7 @@ textarea.form-input::-webkit-resizer { display: none; }
     width: 48px;
     height: 48px;
     border-radius: 12px;
-    font-size: 18px;
+    font-size: clamp(15px, 0.5vw + 13px, 18px);
   }
 
 
@@ -1950,7 +1958,7 @@ textarea.form-input::-webkit-resizer { display: none; }
     padding: 16px 20px;
   }
 
-  .form-btn ion-icon { font-size: 18px; }
+  .form-btn ion-icon { font-size: clamp(15px, 0.5vw + 13px, 18px); }
 
 }
 
@@ -2123,7 +2131,7 @@ textarea.form-input::-webkit-resizer { display: none; }
     }
     .Main-c {
   
-      background-image:url("matrix.webp");
+      background-image:url("../images/matrix.webp");
       border-radius: 20px;
     }
     .Main-c::before,
@@ -2520,7 +2528,7 @@ body.preloader-active .cursor {
 
 .preloader-title {
   font-family: "Monoton", sans-serif;
-  font-size: 2.5rem;
+  font-size: clamp(1.5rem, 2vw + 1rem, 2.5rem);
   color: var(--white-1);
   margin-bottom: 25px;
   letter-spacing: 2px;
@@ -2567,7 +2575,7 @@ body.preloader-active .cursor {
 .loader-percent {
   font-family: 'Tiny5', sans-serif;
   color: var(--orange-yellow-crayola);
-  font-size: 1.2rem;
+  font-size: clamp(0.9rem, 0.5vw + 0.7rem, 1.2rem);
 }
 
 /* Toast Notifications */
@@ -2614,7 +2622,7 @@ body.preloader-active .cursor {
 }
 
 .toast-icon {
-  font-size: 1.2rem;
+  font-size: clamp(0.9rem, 0.5vw + 0.7rem, 1.2rem);
 }
 
 .toast.success .toast-icon {
@@ -2870,7 +2878,7 @@ article {
 
 .scrolly-section .parallax-text {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 3.5rem;
+  font-size: clamp(2rem, 3vw + 1rem, 3.5rem);
   font-weight: 900;
   color: var(--white-1);
   text-shadow: 0 4px 30px rgba(0,0,0,0.8);
@@ -2909,14 +2917,13 @@ main.reveal-active {
 
 main.intro-done {
   opacity: 1 !important;
-  transform: translateY(0) !important;
+  transform: none !important;
   transition: none !important;
 }
 
 /* Responsive adjustments for scrolly canvas text */
 @media (max-width: 768px) {
   .scrolly-section .parallax-text {
-    font-size: 2.2rem;
     letter-spacing: -0.5px;
   }
   .scrolly-section {
@@ -3082,7 +3089,7 @@ main.intro-done {
   justify-content: center;
   width: 22px;
   height: 22px;
-  font-size: 11px;
+  font-size: clamp(9px, 0.3vw + 8px, 11px);
   z-index: 1;
   transition: all 0.4s ease;
 }

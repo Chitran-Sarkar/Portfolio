@@ -248,7 +248,13 @@ const preloadedFrames = [];
 
 function getFrameUrl(index) {
   const frameStr = String(index).padStart(2, '0');
-  return `./assets/Sequence/frame_${frameStr}_delay-0.05s.webp`;
+  let folder = 'desktop';
+  if (window.innerWidth < 768) {
+    folder = 'mobile';
+  } else if (window.innerWidth >= 1400) {
+    folder = 'raw';
+  }
+  return `./assets/Sequence/${folder}/frame_${frameStr}_delay-0.05s.webp`;
 }
 
 if (preloader) {
@@ -1046,22 +1052,25 @@ navigationLinks.forEach(link => {
         isMouseDown = false;
       });
 
-      // Touch support
+      // Touch support — swipe repels (like hover), does not attract
       physCanvas.addEventListener('touchstart', (e) => {
-        isMouseDown = true;
+        e.preventDefault();
+        isMouseDown = false;
         const rect = physCanvas.getBoundingClientRect();
         const touch = e.touches[0];
         liveMouse.x = touch.clientX - rect.left;
         liveMouse.y = touch.clientY - rect.top;
         liveMouse.active = true;
-      });
+      }, { passive: false });
       physCanvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        isMouseDown = false;
         const rect = physCanvas.getBoundingClientRect();
         const touch = e.touches[0];
         liveMouse.x = touch.clientX - rect.left;
         liveMouse.y = touch.clientY - rect.top;
         liveMouse.active = true;
-      });
+      }, { passive: false });
       physCanvas.addEventListener('touchend', () => {
         isMouseDown = false;
         liveMouse.active = false;
