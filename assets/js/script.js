@@ -181,8 +181,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
 
       try {
-        const lat = 22.44712671589631;
-        const lng = 88.42970018166915;
+        const lat = 22.447137;
+        const lng = 88.429729;
 
         mapInstance = L.map('map', {
           center: [lat, lng],
