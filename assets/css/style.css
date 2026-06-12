@@ -76,7 +76,7 @@
   --ff-poppins: 'Poppins', sans-serif;
 
   /* font-size */
-  --fs-1: clamp(24px, 2.5vw + 14px, 36px);
+  --fs-1: clamp(28px, 3.5vw + 16px, 46px);
   --fs-2: clamp(18px, 1.5vw + 12px, 24px);
   --fs-3: clamp(17px, 1.2vw + 11px, 22px);
   --fs-4: clamp(15px, 1vw + 11px, 18px);
@@ -168,7 +168,7 @@ h3{
   font-family: "Jersey 20", sans-serif;
   font-weight: 400;
   font-style: normal;
-  font-size: clamp(1.8rem, 2.5vw + 1rem, 3rem);
+  font-size: clamp(2.4rem, 3.5vw + 1.2rem, 4.2rem);
 }
 
 button {
@@ -226,6 +226,98 @@ body.sidebar-overlaying {
 
 
 /*-----------------------------------*\
+  #ANIMATED GRADIENT GLOW BORDERS
+\*-----------------------------------*/
+
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+:root {
+  --clr-3: #092742;
+  --clr-4: #0369dd;
+  --clr-5: #2e6e66;
+  --clr-6: #35a88b;
+  --clr-7: #53bd83;
+  --clr-8: #0eff7b;
+}
+
+.Main-c {
+  position: relative;
+  background-image: url("../images/matrix.webp");
+  border-radius: 20px;
+}
+
+.Main-c::before,
+.Main-c::after,
+.sidebar::before,
+.sidebar::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  background: conic-gradient(
+    from var(--gradient-angle),
+    var(--clr-3),
+    var(--clr-4),
+    var(--clr-5),
+    var(--clr-4),
+    var(--clr-3)
+  );
+  border-radius: inherit;
+  animation: rotation 20s linear infinite;
+}
+
+/* Insets */
+.Main-c::before,
+.Main-c::after {
+  inset: -0.4rem;
+}
+
+.sidebar::before,
+.sidebar::after {
+  inset: 0;
+}
+
+@media (min-width: 1024px) {
+  .sidebar::before,
+  .sidebar::after {
+    inset: -0.4rem;
+  }
+}
+
+/* Sidebar transparency/readability optimization */
+.sidebar::before {
+  opacity: 0.25;
+}
+.sidebar::after {
+  opacity: 0.15;
+}
+
+.Main-c::after,
+.sidebar::after {
+  filter: blur(3.5rem);
+}
+
+/* Performance optimization: disable heavy blur filter on mobile devices */
+@media (max-width: 768px) {
+  .Main-c::after,
+  .sidebar::after {
+    display: none !important;
+  }
+}
+
+@keyframes rotation {
+  0% {
+    --gradient-angle: 0deg;
+  }
+  100% {
+    --gradient-angle: 360deg;
+  }
+}
+
+/*-----------------------------------*\
   #REUSED STYLE
 \*-----------------------------------*/
 
@@ -237,6 +329,7 @@ article {
   box-shadow: var(--shadow-1);
   z-index: 1;
   backdrop-filter: blur(10px);
+  position: relative;
 }
 
 .separator {
@@ -291,12 +384,6 @@ article {
   
 }
 @media(max-width:580px){
-  .footer{
-    display: none;
-  } 
-  .foot {
-    display:none;
-  }
   #image{
     width: 65px;
     height: 87px;
@@ -1387,6 +1474,7 @@ details[open] summary {
   position: relative;
   margin-bottom: 25px;
   margin-top: 50px;
+  z-index: 10; /* Establish high stacking context to prevent overlaps */
 }
 
 .filter-select {
@@ -1814,10 +1902,12 @@ textarea.form-input::-webkit-resizer { display: none; }
    * #REUSED STYLE
    */
 
-  .sidebar, article {
+  .sidebar, article, .main-content {
     width: 100%;
     max-width: 520px;
     margin-inline: auto;
+  }
+  .sidebar, article {
     padding: 30px;
   }
 
@@ -2105,7 +2195,7 @@ textarea.form-input::-webkit-resizer { display: none; }
    * REUSED STYLE
    */
 
-  .sidebar, article { max-width: 700px; }
+  .sidebar, article, .main-content { max-width: 700px; }
 
   .has-scrollbar::-webkit-scrollbar-button { width: 100px; }
 
@@ -2212,14 +2302,7 @@ textarea.form-input::-webkit-resizer { display: none; }
  * responsive larger than 1024px screen
  */
  @media (max-width: 1024px){
-  #footer{
-    display: none;
-  } 
-  #foot {
-    display:none;
-  }
   article {
-    border-bottom: 70px solid #deb887;
     margin-bottom: 30%;
   }
  }
@@ -2243,58 +2326,7 @@ textarea.form-input::-webkit-resizer { display: none; }
   }
 
 
-    /**
-    * border color
-    */
-    @property --gradient-angle {
-      syntax: "<angle>";
-      initial-value: 0deg;
-      inherits: false;
-    }
-    :root {
-      --clr-3: #092742;
-      --clr-4: #0369dd;
-      --clr-5: #2e6e66;
-      --clr-6: #35a88b;
-      --clr-7: #53bd83;
-      --clr-8: #0eff7b;
-    }
-    .Main-c {
-  
-      background-image:url("../images/matrix.webp");
-      border-radius: 20px;
-    }
-    .Main-c::before,
-    .Main-c::after {
-      
-      content: "";
-      position: absolute;
-      inset: -0.5rem;
-      z-index: -1;
-      background: conic-gradient(
-        from var(--gradient-angle),
-        var(--clr-3),
-        var(--clr-4),
-        var(--clr-5),
-        var(--clr-4),
-        var(--clr-3)
-      );
-      border-radius: inherit;
-      animation: rotation 20s linear infinite;
-    }
-    
-    .Main-c::after {
-      filter: blur(3.5rem);
-    }
-    
-    @keyframes rotation {
-      0% {
-        --gradient-angle: 0deg;
-      }
-      100% {
-        --gradient-angle: 360deg;
-      }
-    }
+
     
   /**
    * REUSED STYLE
@@ -2520,29 +2552,43 @@ textarea.form-input::-webkit-resizer { display: none; }
 	 */
 
 
-.footer{
-  height: 100%;
-  font-weight: 600;
+.footer {
+  position: absolute;
+  bottom: 15px;
+  left: 15px;
+  right: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 0 0 clamp(8px, 1.5vw, 25px) clamp(12px, 3vw, 40px);
   z-index: 10;
-}
-.foot svg{
-  display: inline;
-  position: relative;
-  z-index: -1;
+  pointer-events: none;
 }
 
-.footer p{
-  position: absolute;
-  bottom :3.5em;
-  left:5em;
+.foot {
+  display: block;
+  width: 100%;
+  height: auto;
+  position: relative;
+  z-index: 1;
+  border-radius: 0 0 20px 20px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.footer p,
+.footer a {
+  position: static !important;
+  margin: 0 !important;
+  font-size: clamp(10px, 0.8vw + 8px, 14px) !important;
+  font-weight: 600;
   display: inline-block;
+  pointer-events: auto;
   color: rgb(33, 39, 39);
 }
-.footer a{
-  position: absolute;
-  bottom :3.5em;
-  left:20em;
-  display: inline-block;
+
+.footer a {
   color: rgb(53, 29, 89);
 }
 .filter-btn{
@@ -2551,6 +2597,11 @@ textarea.form-input::-webkit-resizer { display: none; }
 }
 .filter-buttons{
   margin-top: 10%;
+}
+
+.skills-filter-buttons {
+  position: relative;
+  z-index: 10;
 }
 
 .skills-filter-buttons .filter-list {
@@ -3458,11 +3509,14 @@ main.intro-done {
 }
 
 /* Main content border (animated gradient) */
-[data-theme="light"] .Main-c {
+[data-theme="light"] .Main-c,
+[data-theme="light"] .sidebar {
   background-image: none;
 }
 [data-theme="light"] .Main-c::before,
-[data-theme="light"] .Main-c::after {
+[data-theme="light"] .Main-c::after,
+[data-theme="light"] .sidebar::before,
+[data-theme="light"] .sidebar::after {
   background: conic-gradient(
     from var(--gradient-angle),
     hsl(38, 85%, 75%),
