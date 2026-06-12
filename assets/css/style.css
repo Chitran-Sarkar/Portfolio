@@ -315,15 +315,13 @@ article {
 .icon-box ion-icon { --ionicon-stroke-width: 35px; }
 
 .main-content {
-  perspective: 2000px;
-  transform-style: preserve-3d;
+  /* Perspective removed here to prevent breaking fixed positioning on navbar child */
 }
 
 article {
   display: none;
   transform-origin: center center;
   backface-visibility: hidden;
-  transform-style: preserve-3d;
   will-change: transform, opacity;
 }
 
@@ -369,44 +367,44 @@ article.exit-prev {
 @keyframes turnNext {
   0% {
     opacity: 0;
-    transform: rotateY(150deg) scale(0.9) translate3d(0,0,0);
+    transform: perspective(2000px) rotateY(150deg) scale(0.9) translate3d(0,0,0);
   }
   100% {
     opacity: 1;
-    transform: rotateY(0deg) scale(1) translate3d(0,0,0);
+    transform: perspective(2000px) rotateY(0deg) scale(1) translate3d(0,0,0);
   }
 }
 
 @keyframes turnPrev {
   0% {
     opacity: 0;
-    transform: rotateY(-150deg) scale(0.9) translate3d(0,0,0);
+    transform: perspective(2000px) rotateY(-150deg) scale(0.9) translate3d(0,0,0);
   }
   100% {
     opacity: 1;
-    transform: rotateY(0deg) scale(1) translate3d(0,0,0);
+    transform: perspective(2000px) rotateY(0deg) scale(1) translate3d(0,0,0);
   }
 }
 
 @keyframes exitNext {
   0% {
     opacity: 1;
-    transform: rotateY(0deg) scale(1) translate3d(0,0,0);
+    transform: perspective(2000px) rotateY(0deg) scale(1) translate3d(0,0,0);
   }
   100% {
     opacity: 0;
-    transform: rotateY(-150deg) scale(0.9) translate3d(0,0,0);
+    transform: perspective(2000px) rotateY(-150deg) scale(0.9) translate3d(0,0,0);
   }
 }
 
 @keyframes exitPrev {
   0% {
     opacity: 1;
-    transform: rotateY(0deg) scale(1) translate3d(0,0,0);
+    transform: perspective(2000px) rotateY(0deg) scale(1) translate3d(0,0,0);
   }
   100% {
     opacity: 0;
-    transform: rotateY(150deg) scale(0.9) translate3d(0,0,0);
+    transform: perspective(2000px) rotateY(150deg) scale(0.9) translate3d(0,0,0);
   }
 }
 
