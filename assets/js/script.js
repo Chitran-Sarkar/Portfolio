@@ -732,41 +732,88 @@ const pages = document.querySelectorAll("[data-page]");
 
 navigationLinks.forEach(link => {
   link.addEventListener("click", function () {
-    const targetPage = this.innerHTML.toLowerCase();
-    pages.forEach((page, index) => {
-      if (targetPage === page.dataset.page) {
-        page.classList.add("active");
-        navigationLinks[index].classList.add("active");
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        page.classList.remove("active");
-        navigationLinks[index].classList.remove("active");
+    // Find the currently active page
+    let currentIndex = -1;
+    let oldPage = null;
+    pages.forEach((page, idx) => {
+      if (page.classList.contains("active")) {
+        currentIndex = idx;
+        oldPage = page;
       }
     });
-    // Update underline and trigger tab specific transitions
-    updateUnderline();
-    setTimeout(applyBreatheAnimation, 100);
 
-    // If navigating to Contact tab, invalidate map size to ensure correct rendering
-    if (targetPage === 'contact' && mapInstance) {
-      setTimeout(() => {
-        mapInstance.invalidateSize();
-      }, 150);
-    }
+    const targetPage = this.innerHTML.toLowerCase();
+    let targetIndex = -1;
+    pages.forEach((page, idx) => {
+      if (targetPage === page.dataset.page) {
+        targetIndex = idx;
+      }
+    });
 
-    // If navigating to Skills, reset filters to show all sections with Technical active
-    if (targetPage === 'skills') {
-      // Dispatch custom event to immediately wake up physics
-      window.dispatchEvent(new Event('skills-tab-change'));
+    // Only run if transitioning to a different tab
+    if (targetIndex !== -1 && targetIndex !== currentIndex) {
+      // Clean up previous transition classes from all pages
+      pages.forEach(p => {
+        p.classList.remove("turn-next", "turn-prev", "exit-next", "exit-prev");
+      });
 
-      if (skillFilterButtons && skillFilterButtons.length > 0) {
-        // Set default active skill filter button (Technical) and apply its filter
-        if (skillFilterButtons.length > 0) {
-          const defaultBtn = skillFilterButtons[0];
-          skillFilterButtons.forEach(btn => btn.classList.remove('active'));
-          defaultBtn.classList.add('active');
-          const defaultFilter = defaultBtn.getAttribute('data-skill-filter');
-          applySkillFilter(defaultFilter);
+      // Handle the leaving page exit animation
+      if (oldPage) {
+        const isNext = targetIndex > currentIndex;
+        const exitClass = isNext ? "exit-next" : "exit-prev";
+        const tempOldPage = oldPage; // closure reference
+        
+        tempOldPage.classList.remove("active");
+        tempOldPage.classList.add(exitClass);
+        
+        // Hide the leaving page after the animation duration (600ms)
+        setTimeout(() => {
+          tempOldPage.classList.remove(exitClass);
+        }, 600);
+      }
+
+      // Handle the entering page enter animation
+      const newPage = pages[targetIndex];
+      const enterClass = targetIndex > currentIndex ? "turn-next" : "turn-prev";
+      newPage.classList.add(enterClass, "active");
+
+      // Update navbar links active styling
+      navigationLinks.forEach((lnk, idx) => {
+        if (idx === targetIndex) {
+          lnk.classList.add("active");
+        } else {
+          lnk.classList.remove("active");
+        }
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Update underline and trigger tab specific transitions
+      updateUnderline();
+      setTimeout(applyBreatheAnimation, 100);
+
+      // If navigating to Contact tab, invalidate map size to ensure correct rendering
+      if (targetPage === 'contact' && mapInstance) {
+        setTimeout(() => {
+          mapInstance.invalidateSize();
+          mapInstance.setView([22.447137, 88.429729], 15, { animate: true });
+        }, 150);
+      }
+
+      // If navigating to Skills, reset filters to show all sections with Technical active
+      if (targetPage === 'skills') {
+        // Dispatch custom event to immediately wake up physics
+        window.dispatchEvent(new Event('skills-tab-change'));
+
+        if (skillFilterButtons && skillFilterButtons.length > 0) {
+          // Set default active skill filter button (Technical) and apply its filter
+          if (skillFilterButtons.length > 0) {
+            const defaultBtn = skillFilterButtons[0];
+            skillFilterButtons.forEach(btn => btn.classList.remove('active'));
+            defaultBtn.classList.add('active');
+            const defaultFilter = defaultBtn.getAttribute('data-skill-filter');
+            applySkillFilter(defaultFilter);
+          }
         }
       }
     }
@@ -1855,4 +1902,80 @@ navigationLinks.forEach(link => {
     requestAnimationFrame(updateComet);
   }
   initTimelineCometGlow();
+
+  // ---- 10. Details Know More Typing Animation ----
+  const details = document.querySelector('.about-text details');
+  if (details) {
+    const paragraphs = Array.from(details.querySelectorAll('p'));
+    
+    // Store original HTML and clear paragraphs on load
+    paragraphs.forEach(p => {
+      p.dataset.originalHtml = p.innerHTML;
+      p.innerHTML = '';
+    });
+
+    let typingSeqId = 0;
+
+    function typeHtml(element, htmlString, speed, callback) {
+      let i = 0;
+      element.innerHTML = "";
+      const currentSeq = typingSeqId;
+      
+      function step() {
+        if (typingSeqId !== currentSeq) return; // cancel if sequence changed
+        
+        if (i < htmlString.length) {
+          if (htmlString[i] === '<') {
+            let closingIndex = htmlString.indexOf('>', i);
+            if (closingIndex !== -1) {
+              element.innerHTML += htmlString.substring(i, closingIndex + 1);
+              i = closingIndex + 1;
+            } else {
+              element.innerHTML += htmlString[i];
+              i++;
+            }
+          } else {
+            element.innerHTML += htmlString[i];
+            i++;
+          }
+          setTimeout(step, speed);
+        } else if (callback) {
+          callback();
+        }
+      }
+      step();
+    }
+
+    details.addEventListener('toggle', () => {
+      // Increment sequence ID to stop any running typing instances
+      typingSeqId++;
+      
+      if (details.open) {
+        // Clear all paragraphs first
+        paragraphs.forEach(p => {
+          p.innerHTML = '';
+          p.classList.remove('typing');
+        });
+
+        // Type paragraphs sequentially
+        const typeSequence = (index) => {
+          if (index < paragraphs.length) {
+            const p = paragraphs[index];
+            p.classList.add('typing');
+            typeHtml(p, p.dataset.originalHtml, 15, () => {
+              p.classList.remove('typing');
+              typeSequence(index + 1);
+            });
+          }
+        };
+        typeSequence(0);
+      } else {
+        // If closed, clear everything so it starts fresh next time
+        paragraphs.forEach(p => {
+          p.innerHTML = '';
+          p.classList.remove('typing');
+        });
+      }
+    });
+  }
 });
