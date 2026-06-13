@@ -193,7 +193,10 @@ input, textarea {
 
 :focus { outline-color: var(--orange-yellow-crayola); }
 
-html { font-family: var(--ff-poppins); }
+html {
+  font-family: var(--ff-poppins);
+  scrollbar-gutter: stable;
+}
 
 body {
   /* background-image:url("matrix1.jpg"); */
@@ -388,7 +391,9 @@ article {
     width: 65px;
     height: 87px;
   }
- 
+  article {
+    min-height: calc(100vh - 222px) !important;
+  }
 }
 .icon-box::before {
   content: "";
@@ -410,11 +415,18 @@ article {
   transform-origin: center center;
   backface-visibility: hidden;
   will-change: transform, opacity;
+  overflow: hidden; /* Clips the animated wave path and prevents WebKit overflow bugs on mobile */
 }
 
 article.active {
   display: block;
-  padding-bottom: 0%;
+  padding-bottom: 240px !important;
+}
+
+@media (max-width: 1024px) {
+  article.active {
+    padding-bottom: 140px !important;
+  }
 }
 
 /* Default / initial load transition */
@@ -2303,7 +2315,8 @@ textarea.form-input::-webkit-resizer { display: none; }
  */
  @media (max-width: 1024px){
   article {
-    margin-bottom: 30%;
+    margin-bottom: 80px;
+    min-height: calc(100vh - 350px);
   }
  }
 
@@ -2568,13 +2581,36 @@ textarea.form-input::-webkit-resizer { display: none; }
 
 .foot {
   display: block;
-  width: 100%;
+  position: absolute !important;
+  bottom: 15px;
+  left: 15px;
+  right: 15px;
+  width: auto !important;
   height: auto;
-  position: relative;
   z-index: 1;
   border-radius: 0 0 20px 20px;
   overflow: hidden;
   pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .foot {
+    height: 110px;
+    object-fit: cover;
+  }
+}
+
+@media (min-width: 580px) {
+  .foot {
+    left: 30px;
+    right: 30px;
+    bottom: 30px;
+  }
+  .footer {
+    left: 30px;
+    right: 30px;
+    bottom: 30px;
+  }
 }
 
 .footer p,
