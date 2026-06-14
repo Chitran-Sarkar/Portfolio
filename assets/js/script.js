@@ -278,6 +278,11 @@ if (preloader) {
         window.initializeScrollyCanvas();
       }
       setTimeout(updateUnderline, 300);
+      // Clean up Spline 3D preloader component to save memory and CPU/GPU cycles
+      setTimeout(() => {
+        const spline = preloader.querySelector('spline-viewer');
+        if (spline) spline.remove();
+      }, 500);
     }
   }
 
