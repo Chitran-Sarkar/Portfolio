@@ -39,13 +39,15 @@
       if (t) document.documentElement.setAttribute('data-theme', t);
     })();
   </script>
-  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.0/build/spline-viewer.js"></script>
 </head>
 
 <body class="preloader-active">
   <!-- Preloader Screen -->
   <div id="preloader" class="preloader">
-    <spline-viewer class="preloader-spline" style="display: block; width: 100vw; height: 100vh; position: absolute; inset: 0;" url="https://prod.spline.design/91JNhFO3dQ3rfyNU/scene.splinecode"></spline-viewer>
+    <video id="preloader-bg-video" class="preloader-video" autoplay loop muted playsinline style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 1; pointer-events: none;">
+      <source src="./assets/css/preloader.webm" type="video/webm">
+      Your browser does not support the video tag.
+    </video>
     <div class="preloader-content">
       <h1 class="preloader-title">Chitran Sarkar</h1>
       <div class="loader-bar"><div class="loader-progress"></div></div>

@@ -278,11 +278,16 @@ if (preloader) {
         window.initializeScrollyCanvas();
       }
       setTimeout(updateUnderline, 300);
-      // Clean up Spline 3D preloader component to save memory and CPU/GPU cycles
+      // Clean up preloader video to stop decoding and save CPU resources
       setTimeout(() => {
-        const spline = preloader.querySelector('spline-viewer');
-        if (spline) spline.remove();
-      }, 500);
+        const video = preloader.querySelector('#preloader-bg-video');
+        if (video) {
+          video.pause();
+          video.src = "";
+          video.load();
+          video.remove();
+        }
+      }, 600);
     }
   }
 
