@@ -1916,7 +1916,12 @@ navigationLinks.forEach(link => {
 
     requestAnimationFrame(updateComet);
   }
-  initTimelineCometGlow();
+  function decodeHtml(html) {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = html;
+    return txt.value;
+}
+initTimelineCometGlow();
 
   // ---- 10. Details Know More Typing Animation ----
   const details = document.querySelector('.about-text details');
@@ -1925,7 +1930,7 @@ navigationLinks.forEach(link => {
     
     // Store original HTML and clear paragraphs on load
     paragraphs.forEach(p => {
-      p.dataset.originalHtml = p.innerHTML;
+      p.dataset.originalHtml = decodeHtml(p.innerHTML);
       p.innerHTML = '';
     });
 
