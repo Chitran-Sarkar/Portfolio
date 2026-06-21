@@ -1687,11 +1687,14 @@ navigationLinks.forEach(link => {
     container.style.display = 'block';
 
     let isPaused = false;
-    // Pause animation when hovering or touching the container
-    container.addEventListener('mouseenter', () => { isPaused = true; });
-    container.addEventListener('mouseleave', () => { isPaused = false; });
-    container.addEventListener('touchstart', () => { isPaused = true; }, { passive: true });
-    container.addEventListener('touchend', () => { isPaused = false; });
+    // Pause animation when hovering or touching a project item itself
+    const projectItems = container.querySelectorAll('.project-item');
+    projectItems.forEach(item => {
+      item.addEventListener('mouseenter', () => { isPaused = true; });
+      item.addEventListener('mouseleave', () => { isPaused = false; });
+      item.addEventListener('touchstart', () => { isPaused = true; }, { passive: true });
+      item.addEventListener('touchend', () => { isPaused = false; });
+    });
 
     let activeItems = [];
     let itemPositions = []; // Array of { element: HTMLElement, progress: number }
