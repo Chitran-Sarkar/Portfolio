@@ -1799,7 +1799,9 @@ navigationLinks.forEach(link => {
       }
 
       // Update positions
-      if (!isPaused && itemPositions.length > 0) {
+      const modalElement = document.getElementById('projectModalContainer');
+      const isModalOpen = modalElement && modalElement.classList.contains('active');
+      if (!isPaused && !isModalOpen && itemPositions.length > 0) {
         itemPositions.forEach(item => {
           item.progress = (item.progress + speed) % L;
         });
