@@ -67,7 +67,7 @@
       <canvas id="scrolly-canvas"></canvas>
       <div class="scrolly-overlay">
         <div class="scrolly-section" id="sec-1">
-          <h1 class="parallax-text center">Chitran Sarkar.<br><span style="color: var(--orange-yellow-crayola);">Creative Developer.</span></h1>
+          <h1 class="parallax-text center">CHITRAN SARKAR.<br><span style="color: var(--orange-yellow-crayola);">Creative Developer.</span></h1>
         </div>
         <div class="scrolly-section" id="sec-2">
           <h1 class="parallax-text left">I build digital experiences.</h1>
@@ -93,12 +93,18 @@
 
         <div class="sidebar-info">
 
-          <figure class="avatar-box">
-            <img src="./assets/images/profile.avif" alt="Chitran Sarkar" id="image">
-          </figure>
+          <div class="avatar-container">
+            <figure class="avatar-box">
+              <img src="./assets/images/profile.avif" alt="Chitran Sarkar" id="image">
+            </figure>
+          </div>
 
           <div class="info-content">
-            <h1 class="name" title="Chitran Sarkar">Chitran &nbsp; Sarkar</h1>
+            <h1 class="name" title="Chitran Sarkar">
+              <svg viewBox="0 0 380 35" class="name-svg">
+                <text x="50%" y="27" text-anchor="middle" class="name-svg-text">CHITRAN &nbsp; SARKAR</text>
+              </svg>
+            </h1>
 
             <p class="title">Systems Architect & Developer</p>
           </div>
@@ -119,23 +125,23 @@
 
             <li class="contact-item">
 
-              <div class="icon-box">
+              <a href="https://mail.google.com/mail/?view=cm&fs=1&to=sarkarchitran@gmail.com" target="_blank" class="icon-box" title="Compose Email on Gmail">
                 <ion-icon name="mail-outline"></ion-icon>
-              </div>
+              </a>
 
               <div class="contact-info">
                 <p class="contact-title">Email</p>
 
-                <a href="mailto:sarkarchitran@gmail.com" class="contact-link">sarkarchitran@gmail.com</a>
+                <a href="https://mail.google.com/mail/?view=cm&fs=1&to=sarkarchitran@gmail.com" target="_blank" class="contact-link">sarkarchitran@gmail.com</a>
               </div>
 
             </li>
 
             <li class="contact-item">
 
-              <div class="icon-box">
+              <a href="tel:+919831089227" class="icon-box" title="Call Number">
                 <ion-icon name="phone-portrait-outline"></ion-icon>
-              </div>
+              </a>
 
               <div class="contact-info">
                 <p class="contact-title">Phone</p>
@@ -147,28 +153,32 @@
 
             <li class="contact-item">
 
-              <div class="icon-box">
+              <a href="https://calendar.google.com/calendar/r/day/2004/4/18" target="_blank" class="icon-box" title="View in Google Calendar">
                 <ion-icon name="calendar-outline"></ion-icon>
-              </div>
+              </a>
 
               <div class="contact-info">
                 <p class="contact-title">Birthday</p>
 
-                <time datetime="2004-04-18">April 18, 2004</time>
+                <a href="https://calendar.google.com/calendar/r/day/2004/4/18" target="_blank" class="contact-link">
+                  <time datetime="2004-04-18">April 18, 2004</time>
+                </a>
               </div>
 
             </li>
 
             <li class="contact-item">
 
-              <div class="icon-box">
+              <a href="https://www.google.com/maps/search/?api=1&query=Kolkata,West+Bengal,India" target="_blank" class="icon-box" title="View on Google Maps">
                 <ion-icon name="location-outline"></ion-icon>
-              </div>
+              </a>
 
               <div class="contact-info">
                 <p class="contact-title">Location</p>
 
-                <address>Kolkata,West Bengal,India</address>
+                <a href="https://www.google.com/maps/search/?api=1&query=Kolkata,West+Bengal,India" target="_blank" class="contact-link">
+                  <address>Kolkata, West Bengal, India</address>
+                </a>
               </div>
 
             </li>
@@ -284,7 +294,7 @@
           <section id="about-head">
               <span id="left" class="left">
                 <p class="hi">Hi, My name is <span class="h2" id="grey">Chitran</span></p>
-                <p>I am a passionate </p>          
+                <p>I am a passionate in </p>          
                 <span id="element"></span>
               </span>
               <span id="right">
@@ -469,7 +479,7 @@
 
                 <h4 class="h4 timeline-item-title"><a href="https://www.bhu.ac.in/Site/Home/1_2_16_Main-Site">Banaras Hindu University</a>,BHU</h4>
 
-                <span>2026 — 2027</span>
+                <span>2026 — 2028</span>
 
                 <p class="timeline-text">
                   Completed master's degree in Computational Science & Applications(MSc).
@@ -1123,7 +1133,7 @@
    <!-- Setup and start animation! -->
    <script>
     var typed = new Typed('#element', {
-      strings: ['ML Engineer.','App Developer.', 'Graphic Designer.','Web Designer.','Web Developer.','Arduino Developer.','Photographer.','Artist.'],
+      strings: ['ML Engineer.','App Developer.', 'Graphic Designer.','Web Designer.','Web Developer.','IOT Developer.','Photographer.','Artist.'],
       typeSpeed: 50,
       loop: true
     });

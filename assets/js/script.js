@@ -584,7 +584,7 @@ if (canvas && scrollyContainer) {
   filterFunc('all');
 
 // ---- 5. Skills Tab filter logic (Technical, Programming, Soft) ----
-const skillFilterButtons = Array.from(document.querySelectorAll('.skills-filter-btn')).filter(btn => btn.getAttribute('data-skill-filter') !== 'all');
+const skillFilterButtons = Array.from(document.querySelectorAll('.skills-filter-btn[data-skill-filter]')).filter(btn => btn.getAttribute('data-skill-filter') !== 'all');
 const skillSections = [
   document.querySelector('#technical-skills-section'),
   document.querySelector('#programming-languages-section'),
@@ -653,7 +653,7 @@ if (skillFilterButtons.length > 0) {
         let selectedValue = this.innerText;
         if (skillSelectValue) skillSelectValue.innerText = selectedValue;
         skillSelect.classList.remove('active');
-        const btn = Array.from(document.querySelectorAll('.skills-filter-btn')).find(b => b.innerText === selectedValue);
+        const btn = Array.from(document.querySelectorAll('.skills-filter-btn[data-skill-filter]')).find(b => b.innerText === selectedValue);
         if (btn) btn.click();
       });
     });
@@ -824,6 +824,23 @@ navigationLinks.forEach(link => {
             const defaultFilter = defaultBtn.getAttribute('data-skill-filter');
             applySkillFilter(defaultFilter);
           }
+        }
+      }
+
+      // If navigating to Project tab, reset project filters to default (All)
+      if (targetPage === 'project') {
+        if (filterBtn && filterBtn.length > 0) {
+          filterBtn.forEach(btn => {
+            if (btn.innerText.toLowerCase() === 'all') {
+              btn.classList.add('active');
+            } else {
+              btn.classList.remove('active');
+            }
+          });
+          if (selectValue) {
+            selectValue.innerText = "All";
+          }
+          filterFunc('all');
         }
       }
     }
@@ -1709,6 +1726,7 @@ navigationLinks.forEach(link => {
       // Determine max rows and card width based on screen size
       const isDesktop = window.innerWidth >= 1024;
       const gap = 20;
+      const rowGap = 20;
       
       // Optimize cardWidth to scale smoothly across different device sizes
       // (Desktop: 260px - 320px, Mobile/Tablet: 180px - 260px)
@@ -1718,31 +1736,40 @@ navigationLinks.forEach(link => {
 
       // Target gap for spacing between cards (larger on mobile to prevent overlapping)
       const targetGap = isDesktop ? 35 : 55;
+      const minGap = 20;
 
-      const x_min = -cardWidth - gap;
-      const x_max = W + gap;
-      const R = x_max - x_min; // Single row track length
+      // Single row track length formula (preliminary, using cardWidth)
+      const tempR = W + cardWidth + 2 * gap;
 
       // Adjust rows dynamically: calculate the required rows so that all active elements
       // can be distributed along the serpentine path without overlapping.
       const n = currentActiveItems.length;
-      let numRows = 1;
-      if (n > 1) {
-        const neededRows = Math.ceil((n * (cardWidth + targetGap)) / R);
-        const maxAllowedRows = isDesktop ? 3 : 4;
-        numRows = Math.min(maxAllowedRows, Math.max(1, neededRows));
-      }
+      let numRows = Math.max(1, Math.round(n * (cardWidth + targetGap) / tempR));
+      const minRows = Math.ceil(n * (cardWidth + minGap) / tempR);
+      numRows = Math.max(numRows, minRows);
+      const maxAllowedRows = isDesktop ? 3 : 4;
+      numRows = Math.min(maxAllowedRows, numRows);
+
+      // Track length with preliminary cardWidth
+      const L_prelim = numRows * tempR;
+      const maxSpacing = L_prelim / n;
+
+      // Calculate final card dimensions to guarantee no overlap
+      const renderCardWidth = Math.min(cardWidth, maxSpacing - minGap);
       
       // Preserve aspect ratio but give slightly more height to cards on mobile
       // to prevent text overlap if project titles wrap to multiple lines.
-      const cardHeight = isDesktop ? cardWidth * 0.98 : cardWidth * 1.1;
-      const imgHeight = cardWidth * 0.72;
-      
-      const rowGap = 20;
-      const totalHeight = numRows * cardHeight + (numRows - 1) * rowGap;
-      container.style.height = `${totalHeight}px`;
+      const renderCardHeight = isDesktop ? renderCardWidth * 0.98 : renderCardWidth * 1.1;
+      const renderImgHeight = renderCardWidth * 0.72;
 
+      // Final track metrics using renderCardWidth
+      const x_min = -renderCardWidth - gap;
+      const x_max = W + gap;
+      const R = x_max - x_min; // Single row track length
       const L = numRows * R;   // Total serpentine length
+
+      const totalHeight = numRows * renderCardHeight + (numRows - 1) * rowGap;
+      container.style.height = `${totalHeight}px`;
 
       // Check if set of active items has changed or container width changed
       const widthChanged = Math.abs(W - lastWidth) > 5;
@@ -1757,10 +1784,11 @@ navigationLinks.forEach(link => {
         activeItems = currentActiveItems;
         lastWidth = W;
 
-        const spacing = Math.min(L / n, cardWidth + targetGap);
+        // Perfectly uniform spacing along the loop track
+        const spacing = L / n;
 
         // Offset so items start on-screen in the visible portion of row 0
-        const visibleStart = cardWidth + gap;
+        const visibleStart = renderCardWidth + gap;
 
         itemPositions = activeItems.map((element, index) => ({
           element,
@@ -1789,8 +1817,8 @@ navigationLinks.forEach(link => {
       itemPositions.forEach(item => {
         const el = item.element;
         el.style.position = 'absolute';
-        el.style.width = `${cardWidth}px`;
-        el.style.height = `${cardHeight}px`;
+        el.style.width = `${renderCardWidth}px`;
+        el.style.height = `${renderCardHeight}px`;
         el.style.margin = '0';
 
         const d = item.progress;
@@ -1798,7 +1826,7 @@ navigationLinks.forEach(link => {
         const progressInRow = d % R;
 
         let x = 0;
-        let y = rowIndex * (cardHeight + rowGap);
+        let y = rowIndex * (renderCardHeight + rowGap);
 
         // Alternating row directions:
         // Row 1 (even index): Left to Right
@@ -1816,7 +1844,7 @@ navigationLinks.forEach(link => {
         // Scale inner images to fit the new card boundaries
         const img = el.querySelector('.project-img');
         if (img) {
-          img.style.height = `${imgHeight}px`;
+          img.style.height = `${renderImgHeight}px`;
           img.style.marginBottom = '10px';
         }
       });
@@ -1998,4 +2026,64 @@ initTimelineCometGlow();
       }
     });
   }
+
+  // ---- 18. Loop progress bar animation on hover ----
+  function initSkillsHoverAnimation() {
+    const skillsItems = document.querySelectorAll('.skills-item');
+    skillsItems.forEach(item => {
+      const progressBar = item.querySelector('.skill-progress-fill div');
+      const progressPercentage = item.querySelector('.title-wrapper data');
+      if (!progressBar || !progressPercentage) return;
+
+      const target = parseInt(progressPercentage.getAttribute('value')) || 0;
+      let hoverInterval = null;
+      let hoverTimeout = null;
+
+      item.addEventListener('mouseenter', () => {
+        // Clear any global tab load intervals for this bar to prevent conflicts
+        const barId = progressBar.id;
+        if (barId && progressIntervals[barId]) {
+          clearInterval(progressIntervals[barId]);
+          progressIntervals[barId] = null;
+        }
+
+        function startFillAnimation() {
+          let width = 0;
+          progressBar.style.width = '0%';
+          progressPercentage.textContent = '0%';
+          progressPercentage.style.left = '0%';
+
+          if (hoverInterval) clearInterval(hoverInterval);
+          hoverInterval = setInterval(() => {
+            if (width >= target) {
+              clearInterval(hoverInterval);
+              hoverInterval = null;
+              // Wait for 1.2 seconds, then restart the animation loop
+              hoverTimeout = setTimeout(startFillAnimation, 1200);
+            } else {
+              width++;
+              progressBar.style.width = width + '%';
+              progressPercentage.textContent = width + '%';
+              progressPercentage.style.left = width + '%';
+            }
+          }, 12);
+        }
+
+        startFillAnimation();
+      });
+
+      item.addEventListener('mouseleave', () => {
+        if (hoverInterval) clearInterval(hoverInterval);
+        if (hoverTimeout) clearTimeout(hoverTimeout);
+        hoverInterval = null;
+        hoverTimeout = null;
+
+        // Restore to target value instantly & smoothly
+        progressBar.style.width = target + '%';
+        progressPercentage.textContent = target + '%';
+        progressPercentage.style.left = target + '%';
+      });
+    });
+  }
+  initSkillsHoverAnimation();
 });
