@@ -45,9 +45,24 @@
   <!-- Preloader Screen -->
   <div id="preloader" class="preloader">
     <video id="preloader-bg-video" class="preloader-video" autoplay loop muted playsinline style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 1; pointer-events: none;">
-      <source src="./assets/css/preloader.webm" type="video/webm">
       Your browser does not support the video tag.
     </video>
+    <script>
+      (function() {
+        var w = window.innerWidth;
+        var f = 'desktop';
+        if (w < 768) {
+          f = 'mobile';
+        } else if (w >= 1400) {
+          f = 'raw';
+        }
+        var v = document.getElementById('preloader-bg-video');
+        if (v) {
+          v.src = './assets/css/preloader/' + f + '/preloader.webm';
+          v.load();
+        }
+      })();
+    </script>
     <div class="preloader-content">
       <h1 class="preloader-title">Chitran Sarkar</h1>
       <div class="loader-bar"><div class="loader-progress"></div></div>
@@ -56,8 +71,33 @@
   </div>
   <div id="toastContainer" class="toast-container"></div>
   
-  <video id="bg-video-dark" class="bg-video" autoplay loop muted playsinline poster="./assets/images/matrix.webp" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; background: #111;"><source src="./assets/css/background.webm" type="video/webm">Your browser does not support the video tag.</video>
-  <video id="bg-video-light" class="bg-video" autoplay loop muted playsinline style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; background: #f5f0e8; opacity: 0;"><source src="./assets/css/background 2.webm" type="video/webm">Your browser does not support the video tag.</video>
+  <video id="bg-video-dark" class="bg-video" autoplay loop muted playsinline poster="./assets/images/matrix.webp" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; background: #111;">
+    Your browser does not support the video tag.
+  </video>
+  <video id="bg-video-light" class="bg-video" autoplay loop muted playsinline style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; background: #f5f0e8; opacity: 0;">
+    Your browser does not support the video tag.
+  </video>
+  <script>
+    (function() {
+      var w = window.innerWidth;
+      var f = 'desktop';
+      if (w < 768) {
+        f = 'mobile';
+      } else if (w >= 1400) {
+        f = 'raw';
+      }
+      var vd = document.getElementById('bg-video-dark');
+      var vl = document.getElementById('bg-video-light');
+      if (vd) {
+        vd.src = './assets/css/background/' + f + '/background.webm';
+        vd.load();
+      }
+      if (vl) {
+        vl.src = './assets/css/background/' + f + '/background_light.webm';
+        vl.load();
+      }
+    })();
+  </script>
   
   <!--
     - #SCROLLY CANVAS INTRO
@@ -436,7 +476,7 @@
           </section>
 
         <div class="container1 footer">
-          <p>&copy; 2024 Chitran Sarkar |</p> <a href="#top">Back to top</a>
+          <p>&copy; 2024 Chitran Sarkar |</p> <a href="#top" class="back-to-top"><i class="fa-solid fa-chevron-up"></i> Back to top</a>
         </div> 
         <svg class="foot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
           <path class="wavePath" fill="#deb887" fill-opacity="0.5">
@@ -459,7 +499,7 @@
         <article class="resume" data-page="resume">
 
           <header>
-            <h2 class="h2 article-title">Resume</h2>
+            <h2 class="h2 article-title">Qualifications</h2>
           </header>
 
           <section class="timeline">
@@ -527,9 +567,18 @@
     <img src="./assets/images/ed.webp" alt="Education illustration" height="250" class="timeline-image">
 </div>
 
+          <!-- CV button container -->
+          <div class="cv-btn-container">
+            <a href="./assets/CV.pdf" target="_blank" class="form-btn cv-btn">
+              <i class="fa-solid fa-file-pdf"></i>
+              <span>Download CV</span>
+            </a>
+          </div>
+
           </section>
+
         <div class="container1 footer">
-          <p>&copy; 2024 Chitran Sarkar |</p> <a href="#top">Back to top</a>
+          <p>&copy; 2024 Chitran Sarkar |</p> <a href="#top" class="back-to-top"><i class="fa-solid fa-chevron-up"></i> Back to top</a>
         </div> 
         <svg class="foot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
           <path class="wavePath" fill="#deb887" fill-opacity="0.5">
@@ -717,7 +766,7 @@
           
           
           <div class="container1 footer">
-            <p>&copy; 2024 Chitran Sarkar |</p> <a href="#top">Back to top</a>
+            <p>&copy; 2024 Chitran Sarkar |</p> <a href="#top" class="back-to-top"><i class="fa-solid fa-chevron-up"></i> Back to top</a>
           </div> 
           <svg class="foot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
             <path class="wavePath" fill="#deb887" fill-opacity="0.5">
@@ -740,7 +789,7 @@
         <article class="portfolio" data-page="project">
 
           <header>
-            <h2 class="h2 article-title">Portfolio</h2>
+            <h2 class="h2 article-title">Projects</h2>
           </header>
 
           <section class="projects">
@@ -1088,7 +1137,7 @@
           </section>
 
         <div class="container1 footer">
-          <p>&copy; 2024 Chitran Sarkar |</p> <a href="#top">Back to top</a>
+          <p>&copy; 2024 Chitran Sarkar |</p> <a href="#top" class="back-to-top"><i class="fa-solid fa-chevron-up"></i> Back to top</a>
         </div> 
         <svg class="foot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
           <path class="wavePath" fill="#deb887" fill-opacity="0.5">
@@ -1144,7 +1193,7 @@
           </section>
         
           <div class="container1 footer">
-            <p>&copy; 2024 Chitran Sarkar |</p> <a href="#top">Back to top</a>
+            <p>&copy; 2024 Chitran Sarkar |</p> <a href="#top" class="back-to-top"><i class="fa-solid fa-chevron-up"></i> Back to top</a>
           </div> 
           <svg class="foot" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
             <path class="wavePath" fill="#deb887" fill-opacity="0.5">
