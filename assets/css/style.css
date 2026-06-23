@@ -1609,6 +1609,7 @@ details[open] summary {
   box-shadow: 2px 2px 6px rgb(255, 254, 254);
 }
 .skills-container {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;

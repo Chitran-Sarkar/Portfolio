@@ -1151,6 +1151,7 @@ navigationLinks.forEach(link => {
     let canvasContainer = null;
     let animId = null;
     let wakeUpActiveSimulation = null;
+    let isCanvasVisible = true;
 
     function destroySimulation() {
       if (animId) {
@@ -1171,6 +1172,14 @@ navigationLinks.forEach(link => {
     }
 
     function createSimulation() {
+      // ── GPU / performance telemetry ──────────────────────────────────────────
+      let cohesionFrameSkip = 0;   // toggles O(n²) loop every other frame
+      let anchorCacheAge     = 999; // force refresh on first frame
+      const ANCHOR_TTL       = 10; // refresh anchor rects every N physics steps
+      let cachedGroupAnchors = {};
+      let physicsAccum       = 0;  // fixed-timestep accumulator (ms)
+      const FIXED_STEP       = 1000 / 60; // 16.667 ms
+      // ────────────────────────────────────────────────────────────────────────
       destroySimulation();
 
       // Create a single global canvas container inside the main skills section container
@@ -1179,14 +1188,40 @@ navigationLinks.forEach(link => {
       skillsContainer.appendChild(canvasContainer);
 
       const physCanvas = document.createElement('canvas');
+      // GPU layer promotion – compositor can rasterise this on GPU
+      physCanvas.style.willChange = 'transform';
+      physCanvas.style.transform  = 'translateZ(0)';
       canvasContainer.appendChild(physCanvas);
 
-      const ctx = physCanvas.getContext('2d');
-      let width = skillsContainer.clientWidth || 800;
+      // Try OffscreenCanvas for off-main-thread rendering (Chrome/Edge ≥ 69)
+      let ctx;
+      let offscreen = null;
+      let offCtx    = null;
+      const supportsOffscreen = (typeof OffscreenCanvas !== 'undefined') &&
+                                (typeof physCanvas.transferControlToOffscreen === 'function');
+      if (supportsOffscreen) {
+        try {
+          offscreen = physCanvas.transferControlToOffscreen();
+          offCtx    = offscreen.getContext('2d');
+          ctx       = offCtx; // use offscreen context for all drawing
+        } catch(e) {
+          ctx = physCanvas.getContext('2d', { alpha: true });
+        }
+      } else {
+        ctx = physCanvas.getContext('2d', { alpha: true });
+      }
+
+      let width  = skillsContainer.clientWidth  || 800;
       let height = skillsContainer.clientHeight || 700;
 
-      physCanvas.width = width;
-      physCanvas.height = height;
+      // Set canvas logical size on the right object
+      if (offscreen) {
+        offscreen.width  = width;
+        offscreen.height = height;
+      } else {
+        physCanvas.width  = width;
+        physCanvas.height = height;
+      }
 
       // Determine ball radius 'r' based on screen width for absolute responsiveness
       const screenWidth = window.innerWidth;
@@ -1228,8 +1263,18 @@ navigationLinks.forEach(link => {
       let liveMouse = { x: -9999, y: -9999, active: false };
       let isMouseDown = false;
 
+      // Shared render/physics cache (accessible by both setupForceEvents and render)
+      let cachedCanvasRect = null;
+      let hoverQueryTick   = 0;
+
+      // Rare Event States
+      let rareEventTimer    = 0;
+      let rareEventActive   = false;
+      let rareEventType     = '';
+      let rareEventProgress = 0;
+
       physCanvas.addEventListener('mousemove', (e) => {
-        const rect = physCanvas.getBoundingClientRect();
+        const rect = cachedCanvasRect || physCanvas.getBoundingClientRect();
         liveMouse.x = e.clientX - rect.left;
         liveMouse.y = e.clientY - rect.top;
         liveMouse.active = true;
@@ -1251,7 +1296,7 @@ navigationLinks.forEach(link => {
       physCanvas.addEventListener('touchstart', (e) => {
         e.preventDefault();
         isMouseDown = false;
-        const rect = physCanvas.getBoundingClientRect();
+        const rect = cachedCanvasRect || physCanvas.getBoundingClientRect();
         const touch = e.touches[0];
         liveMouse.x = touch.clientX - rect.left;
         liveMouse.y = touch.clientY - rect.top;
@@ -1260,7 +1305,7 @@ navigationLinks.forEach(link => {
       physCanvas.addEventListener('touchmove', (e) => {
         e.preventDefault();
         isMouseDown = false;
-        const rect = physCanvas.getBoundingClientRect();
+        const rect = cachedCanvasRect || physCanvas.getBoundingClientRect();
         const touch = e.touches[0];
         liveMouse.x = touch.clientX - rect.left;
         liveMouse.y = touch.clientY - rect.top;
@@ -1276,17 +1321,23 @@ navigationLinks.forEach(link => {
       // Delayed initialization function triggered when Skills container is visible
       function startSimulation() {
         // Re-evaluate boundaries with actual rendered width/height
-        width = skillsContainer.clientWidth || 800;
+        width  = skillsContainer.clientWidth  || 800;
         height = skillsContainer.clientHeight || 700;
-        physCanvas.width = width;
-        physCanvas.height = height;
+        if (offscreen) {
+          offscreen.width  = width;
+          offscreen.height = height;
+        } else {
+          physCanvas.width  = width;
+          physCanvas.height = height;
+        }
 
         Matter.Body.setPosition(walls[0], { x: width / 2, y: -wallThickness / 2 });
         Matter.Body.setPosition(walls[1], { x: width / 2, y: height + wallThickness / 2 });
         Matter.Body.setPosition(walls[2], { x: -wallThickness / 2, y: height / 2 });
         Matter.Body.setPosition(walls[3], { x: width + wallThickness / 2, y: height / 2 });
 
-        const canvasRect = skillsContainer.getBoundingClientRect();
+        // Prime the cached canvas rect so the first anchor calculation is correct
+        cachedCanvasRect = physCanvas.getBoundingClientRect();
 
         containerArr.forEach((container, groupIndex) => {
           const skills = parsedGroups[groupIndex];
@@ -1355,10 +1406,62 @@ navigationLinks.forEach(link => {
       }
 
       function setupForceEvents() {
-        Matter.Events.on(engine, 'beforeUpdate', () => {
-          const canvasRect = physCanvas.getBoundingClientRect();
+        // Collision Start event listener for squish impact and chain reactions
+        Matter.Events.on(engine, 'collisionStart', (event) => {
+          event.pairs.forEach(pair => {
+            const bodyA = pair.bodyA;
+            const bodyB = pair.bodyB;
+            if (bodyA && bodyB && bodyA.plugin && bodyB.plugin) {
+              const dx = bodyB.position.x - bodyA.position.x;
+              const dy = bodyB.position.y - bodyA.position.y;
+              const relativeSpeed = Math.sqrt(
+                (bodyB.velocity.x - bodyA.velocity.x) * (bodyB.velocity.x - bodyA.velocity.x) +
+                (bodyB.velocity.y - bodyA.velocity.y) * (bodyB.velocity.y - bodyA.velocity.y)
+              );
+              
+              if (relativeSpeed > 0.3) {
+                const impactForce = Math.min(1.0, relativeSpeed * 0.15);
+                const angle = Math.atan2(dy, dx);
+                
+                bodyA.plugin.wiggle = (bodyA.plugin.wiggle || 0) + impactForce;
+                bodyA.plugin.collisionAngle = angle;
+                
+                bodyB.plugin.wiggle = (bodyB.plugin.wiggle || 0) + impactForce;
+                bodyB.plugin.collisionAngle = angle + Math.PI;
 
-          // Move the invisible cursor body to follow the mouse position
+                // Propagate chain reaction to group members
+                propagateChainReaction(bodyA, impactForce * 0.65);
+                propagateChainReaction(bodyB, impactForce * 0.65);
+              }
+            }
+          });
+        });
+
+        function propagateChainReaction(sourceBody, energy) {
+          if (energy < 0.04) return;
+          bodies.forEach(other => {
+            if (other !== sourceBody && other.plugin.groupIndex === sourceBody.plugin.groupIndex) {
+              const dx = other.position.x - sourceBody.position.x;
+              const dy = other.position.y - sourceBody.position.y;
+              const dist = Math.sqrt(dx*dx + dy*dy);
+              const limit = sourceBody.plugin.radius * 4.5;
+              if (dist < limit) {
+                const ratio = dist / limit;
+                const receivedEnergy = energy * Math.exp(-ratio * 2.2);
+                if (receivedEnergy > 0.02) {
+                  other.plugin.wiggle = (other.plugin.wiggle || 0) + receivedEnergy;
+                  other.plugin.collisionAngle = Math.atan2(dy, dx);
+                }
+              }
+            }
+          });
+        }
+
+
+
+        // Setup beforeUpdate event handler
+        Matter.Events.on(engine, 'beforeUpdate', () => {
+          // ── Cursor body ───────────────────────────────────────────────────────
           if (cursorBody) {
             if (liveMouse.active) {
               Matter.Body.setPosition(cursorBody, { x: liveMouse.x, y: liveMouse.y });
@@ -1367,67 +1470,149 @@ navigationLinks.forEach(link => {
             }
           }
 
-          // Pre-compute live anchor centers for each group (recalculated every frame)
-          const groupAnchors = {};
-          containerArr.forEach((container, idx) => {
-            const cardRect = container.getBoundingClientRect();
-            groupAnchors[idx] = {
-              x: (cardRect.left - canvasRect.left) + cardRect.width / 2,
-              y: (cardRect.top - canvasRect.top) + cardRect.height / 2
-            };
-          });
+          // ── Anchor refresh (throttled – avoids layout thrash every step) ──────
+          anchorCacheAge++;
+          if (anchorCacheAge >= ANCHOR_TTL) {
+            anchorCacheAge = 0;
+            if (!cachedCanvasRect) cachedCanvasRect = physCanvas.getBoundingClientRect();
+            containerArr.forEach((container, idx) => {
+              const cardRect = container.getBoundingClientRect();
+              cachedGroupAnchors[idx] = {
+                x: (cardRect.left - cachedCanvasRect.left) + cardRect.width  / 2,
+                y: (cardRect.top  - cachedCanvasRect.top)  + cardRect.height / 2
+              };
+            });
+          }
+          const groupAnchors = cachedGroupAnchors;
 
-          // Determine if mouse is near any body for cursor style
-          if (liveMouse.active) {
-            const mousePoint = { x: liveMouse.x, y: liveMouse.y };
-            const bodiesUnderMouse = Matter.Query.point(bodies, mousePoint);
-            if (bodiesUnderMouse.length > 0) {
-              physCanvas.classList.add('physics-hover');
+          // ── Group centroids (needed every step for cohesion) ──────────────────
+          const groupCentroids = {};
+          const groupCounts    = {};
+          const bodyCount      = bodies.length;
+          for (let bi = 0; bi < bodyCount; bi++) {
+            const body = bodies[bi];
+            const gIdx = body.plugin.groupIndex;
+            if (!groupCentroids[gIdx]) {
+              groupCentroids[gIdx] = { x: 0, y: 0 };
+              groupCounts[gIdx]    = 0;
+            }
+            groupCentroids[gIdx].x += body.position.x;
+            groupCentroids[gIdx].y += body.position.y;
+            groupCounts[gIdx]++;
+          }
+          const centroidKeys = Object.keys(groupCentroids);
+          for (let ki = 0; ki < centroidKeys.length; ki++) {
+            const gIdx = centroidKeys[ki];
+            const cnt  = groupCounts[gIdx];
+            groupCentroids[gIdx].x /= cnt;
+            groupCentroids[gIdx].y /= cnt;
+          }
+
+          // ── Hover query – throttled to every 3rd physics step ────────────────
+          hoverQueryTick++;
+          if (hoverQueryTick >= 3) {
+            hoverQueryTick = 0;
+            if (liveMouse.active) {
+              const mousePoint = { x: liveMouse.x, y: liveMouse.y };
+              const hit = Matter.Query.point(bodies, mousePoint);
+              if (hit.length > 0) {
+                physCanvas.classList.add('physics-hover');
+              } else {
+                physCanvas.classList.remove('physics-hover');
+              }
             } else {
               physCanvas.classList.remove('physics-hover');
             }
-          } else {
-            physCanvas.classList.remove('physics-hover');
           }
 
-          // 1. Per-body forces: strong anchor + organic floating drift + damping + cursor push
+          // 1. Per-body forces
           bodies.forEach((body, idx) => {
-            const anchor = groupAnchors[body.plugin.groupIndex];
+            const gIdx = body.plugin.groupIndex;
+            const anchor = groupAnchors[gIdx];
             if (!anchor) return;
 
-            const dx = anchor.x - body.position.x;
-            const dy = anchor.y - body.position.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
+            const depthMultiplier = 1.0 + 0.3 * (body.plugin.zVal || 0);
 
-            // Strong group-center anchor pull
-            if (dist > 2) {
-              const ndx = dx / dist;
-              const ndy = dy / dist;
-              const basePull = 0.0006;
-              const distPull = 0.00003 * dist;
-              const totalPull = (basePull + distPull) * massFactor;
+            // Elastic Cluster Blob Force:
+            // Find group centroid
+            const centroid = groupCentroids[gIdx];
+            if (centroid) {
+              // Centroid pulls to anchor
+              const adx = anchor.x - centroid.x;
+              const ady = anchor.y - centroid.y;
+              const adist = Math.sqrt(adx*adx + ady*ady);
+              
+              if (adist > 2) {
+                const basePull = 0.0011;
+                const distPull = 0.000045 * adist;
+                const groupPullForce = (basePull + distPull) * massFactor * depthMultiplier;
+                
+                // Distribute centroid steering force to all members
+                Matter.Body.applyForce(body, body.position, {
+                  x: (adx / adist) * groupPullForce,
+                  y: (ady / adist) * groupPullForce * 1.2
+                });
+              }
 
-              Matter.Body.applyForce(body, body.position, {
-                x: ndx * totalPull,
-                y: ndy * totalPull * 1.2
-              });
+              // Body pulls to its group centroid (Cohesion Blob)
+              const cdx = centroid.x - body.position.x;
+              const cdy = centroid.y - body.position.y;
+              const cdist = Math.sqrt(cdx*cdx + cdy*cdy);
+              if (cdist > 2) {
+                const cohesionForce = 0.00065 * massFactor * depthMultiplier;
+                Matter.Body.applyForce(body, body.position, {
+                  x: (cdx / cdist) * cohesionForce,
+                  y: (cdy / cdist) * cohesionForce
+                });
+              }
             }
 
             // Organic antigravity floating drift
             const time = frameCount * 0.008;
             const driftPhase = body.plugin.zOffset;
-            const groupPhase = body.plugin.groupIndex * 1.7;
-            const driftX = Math.sin(time * 0.7 + driftPhase + groupPhase) * 0.00004 * massFactor;
-            const driftY = Math.cos(time * 0.5 + driftPhase * 1.3 + groupPhase) * 0.00005 * massFactor;
+            const groupPhase = gIdx * 1.7;
+            const driftX = Math.sin(time * 0.7 + driftPhase + groupPhase) * 0.00004 * massFactor * depthMultiplier;
+            const driftY = Math.cos(time * 0.5 + driftPhase * 1.3 + groupPhase) * 0.00005 * massFactor * depthMultiplier;
             Matter.Body.applyForce(body, body.position, { x: driftX, y: driftY });
 
-            // Smooth damping
+            // Smooth depth-aware damping
+            const damping = 0.94 + 0.025 * ((body.plugin.zVal || 0) + 1.0) / 2.0;
             Matter.Body.setVelocity(body, {
-              x: body.velocity.x * 0.96,
-              y: body.velocity.y * 0.96
+              x: body.velocity.x * damping,
+              y: body.velocity.y * damping
             });
 
-            // Cursor interactions: click-and-hold attracts, hover repels
+            // Rare Events: Orbit Storm
+            if (rareEventActive && rareEventType === 'orbit' && centroid) {
+              const odx = body.position.x - centroid.x;
+              const ody = body.position.y - centroid.y;
+              const odist = Math.sqrt(odx*odx + ody*ody);
+              if (odist > 5) {
+                const tx = -ody / odist;
+                const ty = odx / odist;
+                const orbitForce = 0.00045 * massFactor * depthMultiplier;
+                Matter.Body.applyForce(body, body.position, {
+                  x: tx * orbitForce,
+                  y: ty * orbitForce
+                });
+              }
+            }
+
+            // Rare Events: Radial Shuffle (Outward blast at start of event)
+            if (rareEventActive && rareEventType === 'shuffle' && rareEventProgress < 40 && centroid) {
+              const odx = body.position.x - centroid.x;
+              const ody = body.position.y - centroid.y;
+              const odist = Math.sqrt(odx*odx + ody*ody);
+              if (odist > 2) {
+                const blastSpeed = 0.06 * massFactor * depthMultiplier;
+                Matter.Body.setVelocity(body, {
+                  x: body.velocity.x + (odx / odist) * blastSpeed,
+                  y: body.velocity.y + (ody / odist) * blastSpeed
+                });
+              }
+            }
+
+            // Magnetic Hover Attraction/Repulsion Equilibrium
             if (liveMouse.active) {
               const mdx = body.position.x - liveMouse.x;
               const mdy = body.position.y - liveMouse.y;
@@ -1438,70 +1623,80 @@ navigationLinks.forEach(link => {
                 const pullRadius = r * 7.0;
                 if (mDist < pullRadius && mDist > 3) {
                   const pullStrength = (pullRadius - mDist) / pullRadius;
-                  const pullForce = Math.pow(pullStrength, 1.5) * 0.0022 * massFactor;
+                  const pullForce = Math.pow(pullStrength, 1.5) * 0.0022 * massFactor * depthMultiplier;
                   Matter.Body.applyForce(body, body.position, {
                     x: -(mdx / mDist) * pullForce * body.mass,
                     y: -(mdy / mDist) * pullForce * body.mass
                   });
                 }
               } else {
-                // Repulsion Force
-                const pushRadius = r * 2.0;
-                if (mDist < pushRadius && mDist > 1) {
-                  const pushStrength = (pushRadius - mDist) / pushRadius;
-                  const pushForce = pushStrength * 0.001 * massFactor;
+                // Magnetic equilibrium ring force
+                const equilibriumDistance = r * 2.2;
+                const activeRadius = r * 5.5;
+                
+                if (mDist < activeRadius && mDist > 2) {
+                  const distDelta = mDist - equilibriumDistance;
+                  let force = 0;
+                  if (distDelta < 0) {
+                    // Inside equilibrium: strong repulsion
+                    const t = -distDelta / equilibriumDistance;
+                    force = t * 0.0016 * massFactor * depthMultiplier;
+                  } else {
+                    // Outside equilibrium: gentle attraction
+                    const t = distDelta / (activeRadius - equilibriumDistance);
+                    force = -t * 0.00065 * massFactor * depthMultiplier;
+                  }
                   Matter.Body.applyForce(body, body.position, {
-                    x: (mdx / mDist) * pushForce,
-                    y: (mdy / mDist) * pushForce
+                    x: (mdx / mDist) * force,
+                    y: (mdy / mDist) * force
                   });
                 }
               }
             }
           });
 
-          // 2. Inter-body forces: strong same-group cohesion
-          for (let i = 0; i < bodies.length; i++) {
-            const bodyA = bodies[i];
+          // 2. Inter-body cohesion – O(n²) throttled to every 2nd physics step
+          cohesionFrameSkip = (cohesionFrameSkip + 1) % 2;
+          if (cohesionFrameSkip === 0) {
+            for (let i = 0; i < bodyCount; i++) {
+              const bodyA = bodies[i];
+              const gIdxA = bodyA.plugin.groupIndex;
+              const breathingScale = 1.0 + 0.15 * Math.sin(frameCount * 0.015 + gIdxA * 1.5);
+              const posAx = bodyA.position.x;
+              const posAy = bodyA.position.y;
 
-            for (let j = i + 1; j < bodies.length; j++) {
-              const bodyB = bodies[j];
+              for (let j = i + 1; j < bodyCount; j++) {
+                const bodyB = bodies[j];
+                if (bodyA.plugin.groupIndex !== bodyB.plugin.groupIndex) continue;
 
-              const mdx = bodyB.position.x - bodyA.position.x;
-              const mdy = bodyB.position.y - bodyA.position.y;
-              const dist = Math.sqrt(mdx * mdx + mdy * mdy);
+                const mdx  = bodyB.position.x - posAx;
+                const mdy  = bodyB.position.y - posAy;
+                const dist = Math.sqrt(mdx * mdx + mdy * mdy);
+                if (dist < 3) continue;
 
-              if (dist < 3) continue;
+                const cohesionForce = (0.00032 + 0.0000075 * dist) * massFactor * breathingScale;
+                const invDist = 1 / dist;
+                const fx = mdx * invDist * cohesionForce;
+                const fy = mdy * invDist * cohesionForce;
 
-              if (bodyA.plugin.groupIndex === bodyB.plugin.groupIndex) {
-                const maxDist = (bodyA.plugin.radius + bodyB.plugin.radius) * 3.0;
-                if (dist < maxDist) {
-                  const ratio = dist / maxDist;
-                  const pullForce = 0.0007 * Math.pow(1 - ratio, 2) * massFactor;
-                  const fx = (mdx / dist) * pullForce;
-                  const fy = (mdy / dist) * pullForce;
-                  Matter.Body.applyForce(bodyA, bodyA.position, { x: fx, y: fy });
-                  Matter.Body.applyForce(bodyB, bodyB.position, { x: -fx, y: -fy });
-                } else if (dist < maxDist * 4) {
-                  const pullForce = 0.00012 * massFactor;
-                  const fx = (mdx / dist) * pullForce;
-                  const fy = (mdy / dist) * pullForce;
-                  Matter.Body.applyForce(bodyA, bodyA.position, { x: fx, y: fy });
-                  Matter.Body.applyForce(bodyB, bodyB.position, { x: -fx, y: -fy });
-                }
+                Matter.Body.applyForce(bodyA, bodyA.position, { x:  fx, y:  fy });
+                Matter.Body.applyForce(bodyB, bodyB.position, { x: -fx, y: -fy });
               }
             }
           }
         });
       }
 
-      // Animation render loop
+      // Animation render loop – fixed physics timestep accumulator
       let isTimeoutActive = false;
-      let frameCount = 0;
-      let lastTime = performance.now();
+      let frameCount      = 0;
+      let lastTime        = performance.now();
+      // Reusable sort array – avoid per-frame allocation
+      const sortedBodiesArr = [];
 
       function render() {
         isTimeoutActive = false;
-        if (physCanvas.offsetParent === null) {
+        if (physCanvas.offsetParent === null || !isCanvasVisible) {
           isTimeoutActive = true;
           animId = setTimeout(render, 250);
           return;
@@ -1509,20 +1704,65 @@ navigationLinks.forEach(link => {
 
         const now = performance.now();
         let delta = now - lastTime;
-        lastTime = now;
-        if (delta > 100) delta = 16.66;
+        lastTime  = now;
+        // Clamp to avoid spiral of death after tab sleep
+        if (delta > 100) delta = FIXED_STEP;
+
+        // Refresh canvas rect once per render frame (not per physics step)
+        cachedCanvasRect = physCanvas.getBoundingClientRect();
 
         if (!simulationStarted) {
           startSimulation();
           simulationStarted = true;
         }
 
+
+
+        // Update Rare Event states
+        rareEventTimer += delta;
+        if (rareEventTimer > 25000) {
+          rareEventTimer = 0;
+          rareEventActive = true;
+          rareEventType = Math.random() > 0.5 ? 'orbit' : 'shuffle';
+          rareEventProgress = 0;
+        }
+
+        if (rareEventActive) {
+          rareEventProgress += delta;
+          if (rareEventProgress > 6000) {
+            rareEventActive = false;
+            rareEventType = '';
+          }
+        }
+
         frameCount++;
         ctx.clearRect(0, 0, width, height);
 
-        // Update 3D oscillation values
+        // Update 3D oscillation values & decay wiggle
         bodies.forEach(body => {
-          body.plugin.zVal = Math.sin(frameCount * body.plugin.zSpeed + body.plugin.zOffset);
+          // Decay wiggle
+          if (body.plugin.wiggle > 0.01) {
+            body.plugin.wiggle *= 0.88;
+          } else {
+            body.plugin.wiggle = 0;
+          }
+
+          // Hover Lift Elevation
+          let isHovered = false;
+          if (liveMouse.active) {
+            const mdx = body.position.x - liveMouse.x;
+            const mdy = body.position.y - liveMouse.y;
+            const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
+            if (mDist < body.plugin.radius * 1.1) {
+              isHovered = true;
+            }
+          }
+          body.plugin.isHovered = isHovered;
+
+          const baseZ = Math.sin(frameCount * body.plugin.zSpeed + body.plugin.zOffset);
+          const targetZ = isHovered ? 1.4 : baseZ;
+          body.plugin.zVal = body.plugin.zVal || 0;
+          body.plugin.zVal += (targetZ - body.plugin.zVal) * 0.08;
 
           if (!body.plugin.orientation) {
             const theta = Math.random() * Math.PI * 2;
@@ -1571,8 +1811,11 @@ navigationLinks.forEach(link => {
           }
         });
 
-        // Painters algorithm sort
-        const sortedBodies = [...bodies].sort((a, b) => a.plugin.zVal - b.plugin.zVal);
+        // Painters algorithm sort – reuse pre-allocated array
+        sortedBodiesArr.length = 0;
+        for (let si = 0; si < bodies.length; si++) sortedBodiesArr.push(bodies[si]);
+        sortedBodiesArr.sort((a, b) => a.plugin.zVal - b.plugin.zVal);
+        const sortedBodies = sortedBodiesArr;
 
         // Draw glossy 3D spheres
         sortedBodies.forEach(body => {
@@ -1595,15 +1838,29 @@ navigationLinks.forEach(link => {
 
           const isLight = document.documentElement.getAttribute('data-theme') === 'light';
 
+          // Apply squish/rotation deformation at the translated origin of the sphere
+          let squishAmt = 0;
+          if (body.plugin.wiggle > 0.01) {
+            squishAmt = body.plugin.wiggle * 0.18 * Math.sin(frameCount * 0.85);
+            squishAmt = Math.max(-0.35, Math.min(0.35, squishAmt));
+          }
+
+          ctx.translate(rx, ry);
+          if (body.plugin.wiggle > 0.01 && body.plugin.collisionAngle !== undefined) {
+            ctx.rotate(body.plugin.collisionAngle);
+          }
+          ctx.scale(1.0 - squishAmt, 1.0 + squishAmt);
+
           // Optimized vector shadow (100x faster than shadowBlur Gaussian filter)
           ctx.fillStyle = isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(0, 0, 0, 0.35)';
           ctx.beginPath();
-          ctx.arc(rx, ry + 6 * scale, visualRadius, 0, Math.PI * 2);
+          ctx.arc(0, 6 * scale, visualRadius, 0, Math.PI * 2);
           ctx.fill();
 
+          // Body background
           ctx.fillStyle = '#ffffff';
           ctx.beginPath();
-          ctx.arc(rx, ry, visualRadius, 0, Math.PI * 2);
+          ctx.arc(0, 0, visualRadius, 0, Math.PI * 2);
           ctx.fill();
 
           ctx.strokeStyle = isLight ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.85)';
@@ -1615,12 +1872,12 @@ navigationLinks.forEach(link => {
 
             ctx.save();
             ctx.beginPath();
-            ctx.arc(rx, ry, visualRadius, 0, Math.PI * 2);
+            ctx.arc(0, 0, visualRadius, 0, Math.PI * 2);
             ctx.clip();
 
             const displacementFactor = 0.82;
-            const lx = rx + nx * visualRadius * displacementFactor;
-            const ly = ry + ny * visualRadius * displacementFactor;
+            const lx = nx * visualRadius * displacementFactor;
+            const ly = ny * visualRadius * displacementFactor;
 
             ctx.translate(lx, ly);
 
@@ -1675,8 +1932,8 @@ navigationLinks.forEach(link => {
 
           // 3D glossy light gradient overlay
           const grad = ctx.createRadialGradient(
-            rx - visualRadius * 0.35, ry - visualRadius * 0.35, visualRadius * 0.05,
-            rx, ry, visualRadius
+            -visualRadius * 0.35, -visualRadius * 0.35, visualRadius * 0.05,
+            0, 0, visualRadius
           );
           grad.addColorStop(0, 'rgba(255, 255, 255, 0.55)');
           grad.addColorStop(0.2, 'rgba(255, 255, 255, 0.0)');
@@ -1686,13 +1943,21 @@ navigationLinks.forEach(link => {
 
           ctx.fillStyle = grad;
           ctx.beginPath();
-          ctx.arc(rx, ry, visualRadius, 0, Math.PI * 2);
+          ctx.arc(0, 0, visualRadius, 0, Math.PI * 2);
           ctx.fill();
 
           ctx.restore();
         });
 
-        Matter.Engine.update(engine, delta);
+        // Fixed-timestep physics integration
+        physicsAccum += delta;
+        let physSteps = 0;
+        while (physicsAccum >= FIXED_STEP && physSteps < 3) {
+          Matter.Engine.update(engine, FIXED_STEP);
+          physicsAccum -= FIXED_STEP;
+          physSteps++;
+        }
+        // Carry excess (don't reset to 0 to preserve sub-step accuracy)
         animId = requestAnimationFrame(render);
       }
 
@@ -1724,6 +1989,19 @@ navigationLinks.forEach(link => {
         wakeUpActiveSimulation();
       }
     });
+
+    // Intersection Observer to pause/resume simulation when off-screen
+    if (typeof IntersectionObserver !== 'undefined') {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          isCanvasVisible = entry.isIntersecting;
+          if (isCanvasVisible && wakeUpActiveSimulation) {
+            wakeUpActiveSimulation();
+          }
+        });
+      }, { threshold: 0.05 });
+      observer.observe(skillsContainer);
+    }
   };
 
   initSkillsPhysics();
