@@ -1238,6 +1238,7 @@ details[open] summary {
 }
 
 .service-item .service-icon-box i {
+  font-size: clamp(24px, 4vw + 10px, 44px) !important; /* override inline style="font-size:40px" */
   transition: all var(--transition-1);
 }
 
