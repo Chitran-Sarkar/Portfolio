@@ -541,6 +541,15 @@ article.exit-prev {
   width: fit-content;
 }
 
+/* Ensure uniform gap between header (containing h2) and the first content section in every tab */
+article > header {
+  margin-bottom: clamp(20px, 4vw, 45px);
+}
+article > header + section,
+article > header + div {
+  margin-top: 0;
+}
+
 .article-title::after {
   content: "";
   position: absolute;
@@ -1113,7 +1122,6 @@ details[open] summary {
   50% { opacity: 0; }
 }
 #left, #right {
-  padding-top: 5%;
   font-size: clamp(1.5rem, 2vw + 1rem, 2.5rem);
   display: inline-block;
 }
@@ -1454,7 +1462,6 @@ details[open] summary {
  */
 
 .timeline { 
-  padding-top: 5%;
   margin-bottom: clamp(20px, 4vw, 40px); }
 
 .timeline .title-wrapper {
@@ -1730,13 +1737,11 @@ details[open] summary {
 
 .filter-list { 
   display: none;
-  margin-top: 50px;
  }
 
 .filter-select-box {
   position: relative;
   margin-bottom: 25px;
-  margin-top: 50px;
   z-index: 10; /* Establish high stacking context to prevent overlaps */
 }
 
