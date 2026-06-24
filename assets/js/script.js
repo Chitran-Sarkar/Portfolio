@@ -241,119 +241,215 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-// ---- 1. Preloader (progress based on assets + scrolly frames) ----
-const preloader = document.getElementById('preloader');
-const totalFrames = 80;
+// ---- 1. Preloader – comprehensive asset-gate --------------------------------
+//
+// Tracks EVERY asset category before dismissing:
+//   • All <img> elements in the HTML (profile, project thumbnails, etc.)
+//   • Background videos (dark + light) – waits for canplaythrough
+//   • Devicon CDN SVG images used by the physics skill bubbles
+//   • Scrolly canvas WebP frame sequence (80 frames, decoded into bitmaps)
+//   • Leaflet tile map (resolves on 'load' or 3 s timeout)
+//
+// Strategy: Each asset is represented as a Promise that always resolves
+// (errors fall through so a single bad CDN image never blocks the page).
+// The preloader finishes when ALL promises settle AND a minimum display time
+// of 800 ms has elapsed (avoids a flash‑and‑gone experience on fast nets).
+// A hard 12 s ceiling prevents hanging forever on blocked CDN resources.
+// ---------------------------------------------------------------------------
+
+const preloader    = document.getElementById('preloader');
+const totalFrames  = 80;
 const preloadedFrames = [];
 
 function getFrameUrl(index) {
   const frameStr = String(index).padStart(2, '0');
   let folder = 'desktop';
-  if (window.innerWidth < 768) {
-    folder = 'mobile';
-  } else if (window.innerWidth >= 1400) {
-    folder = 'raw';
-  }
+  if (window.innerWidth < 768)      folder = 'mobile';
+  else if (window.innerWidth >= 1400) folder = 'raw';
   return `./assets/Sequence/${folder}/frame_${frameStr}_delay-0.05s.webp`;
 }
 
 if (preloader) {
-  const progressBar = preloader.querySelector('.loader-progress');
-  const percentText = preloader.querySelector('.loader-percent');
-  const docImages = Array.from(document.images);
-  
-  const mapContainer = document.getElementById('map');
-  // Total assets is document images + 80 sequence frames + map (if present)
-  const total = docImages.length + totalFrames + (mapContainer ? 1 : 0);
-  let loaded = 0;
+  const progressBar  = preloader.querySelector('.loader-progress');
+  const percentText  = preloader.querySelector('.loader-percent');
+  const labelEl      = preloader.querySelector('.loader-label');
+
+  // ── Devicon URLs mirrored from the physics simulation ──────────────────────
+  const DEVICON_URLS = [
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/qt/qt-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/keras/keras-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/arduino/arduino-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg'
+  ];
+
+  // ── Asset counters ──────────────────────────────────────────────────────────
+  let resolvedCount = 0;
+  const assetPromises = [];
+
+  // Helper: wrap an image element load into a Promise
+  function trackImage(img, label) {
+    return new Promise(resolve => {
+      if (img.complete && img.naturalWidth > 0) { resolve(); return; }
+      const done = () => { resolve(); };
+      img.addEventListener('load',  done, { once: true });
+      img.addEventListener('error', done, { once: true });
+      // Per-image 8 s safety net
+      setTimeout(resolve, 8000);
+    });
+  }
+
+  // Helper: wrap a video into a Promise (resolves when it can play)
+  function trackVideo(videoEl, label) {
+    return new Promise(resolve => {
+      if (!videoEl) { resolve(); return; }
+      if (videoEl.readyState >= 3) { resolve(); return; } // HAVE_FUTURE_DATA
+      const done = () => { resolve(); };
+      videoEl.addEventListener('canplaythrough', done, { once: true });
+      videoEl.addEventListener('error',          done, { once: true });
+      // 5 s safety net for videos (may be large)
+      setTimeout(resolve, 5000);
+    });
+  }
+
+  // Register a promise and hook it to progress update
+  function registerAsset(promise) {
+    assetPromises.push(promise);
+    promise.then(() => {
+      resolvedCount++;
+      updateProgress();
+    });
+  }
+
+  function setLabel(text) {
+    if (labelEl) labelEl.textContent = text;
+  }
 
   function updateProgress() {
-    const percent = total ? Math.round((loaded / total) * 100) : 100;
+    const total   = assetPromises.length;
+    const percent = total ? Math.min(99, Math.round((resolvedCount / total) * 100)) : 0;
     if (progressBar) progressBar.style.width = `${percent}%`;
-    if (percentText) percentText.textContent = `${percent}%`;
-    if (percent >= 100) {
+    if (percentText)  percentText.textContent  = `${percent}%`;
+  }
+
+  // ── 1. HTML <img> elements ─────────────────────────────────────────────────
+  setLabel('Loading images…');
+  Array.from(document.images).forEach(img => {
+    registerAsset(trackImage(img, img.src));
+  });
+
+  // ── 2. Background videos ────────────────────────────────────────────────────
+  setLabel('Loading videos…');
+  const bgVideoDark  = document.getElementById('bg-video-dark');
+  const bgVideoLight = document.getElementById('bg-video-light');
+  registerAsset(trackVideo(bgVideoDark,  'bg-dark'));
+  registerAsset(trackVideo(bgVideoLight, 'bg-light'));
+
+  // ── 3. Devicon skill SVGs ──────────────────────────────────────────────────
+  setLabel('Loading skill icons…');
+  DEVICON_URLS.forEach(url => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    // Store in a global cache so the physics simulation reuses the same objects
+    if (!window._deviconCache) window._deviconCache = {};
+    window._deviconCache[url] = img;
+    img.src = url;
+    registerAsset(trackImage(img, url));
+  });
+
+  // ── 4. Scrolly canvas frame sequence ───────────────────────────────────────
+  setLabel('Loading intro frames…');
+  for (let i = 0; i < totalFrames; i++) {
+    const img = new Image();
+    img.src = getFrameUrl(i);
+    preloadedFrames.push(img);
+
+    // Wrap frame load + optional decode into one promise
+    const framePromise = new Promise(resolve => {
+      const onLoad = () => {
+        if (typeof img.decode === 'function') {
+          img.decode().then(resolve).catch(resolve);
+        } else {
+          resolve();
+        }
+      };
+      if (img.complete && img.naturalWidth > 0) { onLoad(); return; }
+      img.addEventListener('load',  onLoad,   { once: true });
+      img.addEventListener('error', resolve,  { once: true });
+      setTimeout(resolve, 10000); // per-frame 10 s cap
+    });
+    registerAsset(framePromise);
+  }
+
+  // ── 5. Leaflet tile map ────────────────────────────────────────────────────
+  const mapContainer = document.getElementById('map');
+  if (mapContainer) {
+    setLabel('Loading map…');
+    registerAsset(initializeLeafletMap());
+  }
+
+  // ── Finish: wait for everything + minimum display time ─────────────────────
+  const MIN_DISPLAY_MS   = 800;   // never dismiss in < 800 ms
+  const HARD_TIMEOUT_MS  = 12000; // bail out after 12 s regardless
+  const startedAt = performance.now();
+
+  // Hard-ceiling promise
+  const hardTimeout = new Promise(resolve => setTimeout(resolve, HARD_TIMEOUT_MS));
+
+  Promise.race([
+    Promise.all(assetPromises),
+    hardTimeout
+  ]).then(() => {
+    // Force bar to 100 %
+    resolvedCount = assetPromises.length;
+    if (progressBar) progressBar.style.width = '100%';
+    if (percentText)  percentText.textContent  = '100%';
+    setLabel('Ready!');
+
+    // Ensure minimum display time so the user actually sees the preloader
+    const elapsed   = performance.now() - startedAt;
+    const remaining = Math.max(0, MIN_DISPLAY_MS - elapsed);
+
+    setTimeout(() => {
       preloader.classList.add('finished');
       document.body.classList.remove('preloader-active');
       if (window.initializeScrollyCanvas) {
         window.initializeScrollyCanvas();
       }
       setTimeout(updateUnderline, 300);
-      // Clean up preloader video to stop decoding and save CPU resources
+
+      // Release preloader video memory
       setTimeout(() => {
-        const video = preloader.querySelector('#preloader-bg-video');
-        if (video) {
-          video.pause();
-          video.src = "";
-          video.load();
-          video.remove();
-        }
+        const vid = preloader.querySelector('#preloader-bg-video');
+        if (vid) { vid.pause(); vid.src = ''; vid.load(); vid.remove(); }
       }, 600);
-    }
-  }
+    }, remaining);
+  });
 
-  if (total === 0) {
-    loaded = total;
-    updateProgress();
-  } else {
-    docImages.forEach(img => {
-      if (img.complete) {
-        loaded++;
-      } else {
-        img.addEventListener('load', () => { loaded++; updateProgress(); });
-        img.addEventListener('error', () => { loaded++; updateProgress(); });
-      }
-    });
-
-    if (mapContainer) {
-      initializeLeafletMap().then(() => {
-        loaded++;
-        updateProgress();
-      });
-    }
-
-    // Preload scrolly canvas frames
-    for (let i = 0; i < totalFrames; i++) {
-      const img = new Image();
-      img.src = getFrameUrl(i);
-      img.onload = () => {
-        if (typeof img.decode === 'function') {
-          img.decode()
-            .then(() => {
-              loaded++;
-              updateProgress();
-            })
-            .catch(() => {
-              loaded++;
-              updateProgress();
-            });
-        } else {
-          loaded++;
-          updateProgress();
-        }
-      };
-      img.onerror = () => {
-        loaded++;
-        updateProgress();
-      };
-      preloadedFrames.push(img);
-    }
-
-    updateProgress();
-
-    // Fallback: after 15 seconds force completion if still not done
-    setTimeout(() => {
-      if (loaded < total) {
-        loaded = total;
-        updateProgress();
-      }
-    }, 15000);
-
-    window.addEventListener('load', () => {
-      loaded = total;
-      updateProgress();
-    });
-  }
+  // Show initial 0 %
+  updateProgress();
 }
+
 
 // ---- 1b. Scrolly Canvas Logic ----
 const canvas = document.getElementById('scrolly-canvas');
@@ -1133,18 +1229,26 @@ navigationLinks.forEach(link => {
       'MySQL': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg'
     };
 
-    // Preload tech logo SVGs
+    // Reuse images pre-fetched and decoded by the preloader.
+    // window._deviconCache is populated before the preloader dismisses,
+    // so by the time the Skills tab is ever opened all images are ready.
     const loadedImages = {};
     Object.keys(deviconMap).forEach(key => {
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      img.src = deviconMap[key];
-      img.onload = () => {
-        loadedImages[key] = img;
-      };
-      img.onerror = () => {
-        console.warn(`Failed to pre-load Devicon SVG logo for: ${key}`);
-      };
+      const url       = deviconMap[key];
+      const cached    = window._deviconCache && window._deviconCache[url];
+      if (cached && cached.complete && cached.naturalWidth > 0) {
+        loadedImages[key] = cached;
+      } else {
+        // Fallback: create a fresh Image if cache miss (shouldn't happen normally)
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = url;
+        img.onload = () => { loadedImages[key] = img; };
+        img.onerror = () => { console.warn(`Devicon fallback load failed: ${key}`); };
+        // Also store in cache for consistency
+        if (!window._deviconCache) window._deviconCache = {};
+        window._deviconCache[url] = img;
+      }
     });
 
     let activeEngine = null;
