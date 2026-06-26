@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // ---------------------------------------------------------------------------
 
 const preloader    = document.getElementById('preloader');
-const totalFrames  = 80;
+const totalFrames  = 60;
 const preloadedFrames = [];
 
 function getFrameUrl(index) {
@@ -266,7 +266,7 @@ function getFrameUrl(index) {
   let folder = 'desktop';
   if (window.innerWidth < 768)      folder = 'mobile';
   else if (window.innerWidth >= 1400) folder = 'raw';
-  return `./assets/Sequence/${folder}/frame_${frameStr}_delay-0.05s.webp`;
+  return `./assets/Sequence/${folder}/frame_${frameStr}_delay-0.066s.webp`;
 }
 
 if (preloader) {
