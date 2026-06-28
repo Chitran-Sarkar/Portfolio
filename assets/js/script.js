@@ -170,6 +170,45 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   window.scrollTo(0, 0);
 
+  let subFilterModeActive = false;
+
+  // Shared Devicon mapping and preload store for skill bubbles
+  const deviconMap = {
+    'Python': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
+    'C': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg',
+    'Java': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg',
+    'C++': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg',
+    'Cython': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
+    'Pygame': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
+    'PyQt': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/qt/qt-original.svg',
+    'OpenCV': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg',
+    'Numpy': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg',
+    'Pandas': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg',
+    'Tensorflow': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg',
+    'Keras': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/keras/keras-original.svg',
+    'Numba': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
+    'PyTorch': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg',
+    'ONNX': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
+    'MicroPython': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
+    'PySerial': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
+    'PyFirmata': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/arduino/arduino-original.svg',
+    'Bash': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg',
+    'HTML': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg',
+    'CSS': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg',
+    'JavaScript': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg',
+    'React': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg',
+    'Bootstrap': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg',
+    'TypeScript': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg',
+    'Tailwind CSS': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg',
+    'Node.js': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg',
+    'PHP': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg',
+    'Django': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg',
+    'Flask': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg',
+    'MongoDB': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg',
+    'MySQL': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg'
+  };
+  const loadedImages = {};
+
   // Initialize Leaflet Map
   let mapInstance = null;
   function initializeLeafletMap() {
@@ -241,215 +280,194 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-// ---- 1. Preloader – comprehensive asset-gate --------------------------------
-//
-// Tracks EVERY asset category before dismissing:
-//   • All <img> elements in the HTML (profile, project thumbnails, etc.)
-//   • Background videos (dark + light) – waits for canplaythrough
-//   • Devicon CDN SVG images used by the physics skill bubbles
-//   • Scrolly canvas WebP frame sequence (80 frames, decoded into bitmaps)
-//   • Leaflet tile map (resolves on 'load' or 3 s timeout)
-//
-// Strategy: Each asset is represented as a Promise that always resolves
-// (errors fall through so a single bad CDN image never blocks the page).
-// The preloader finishes when ALL promises settle AND a minimum display time
-// of 800 ms has elapsed (avoids a flash‑and‑gone experience on fast nets).
-// A hard 12 s ceiling prevents hanging forever on blocked CDN resources.
-// ---------------------------------------------------------------------------
-
-const preloader    = document.getElementById('preloader');
-const totalFrames  = 60;
+// ---- 1. Preloader (progress based on assets + scrolly frames) ----
+const preloader = document.getElementById('preloader');
+const totalFrames = 60;
 const preloadedFrames = [];
 
 function getFrameUrl(index) {
   const frameStr = String(index).padStart(2, '0');
   let folder = 'desktop';
-  if (window.innerWidth < 768)      folder = 'mobile';
-  else if (window.innerWidth >= 1400) folder = 'raw';
+  if (window.innerWidth < 768) {
+    folder = 'mobile';
+  } else if (window.innerWidth >= 1400) {
+    folder = 'raw';
+  }
   return `./assets/Sequence/${folder}/frame_${frameStr}_delay-0.066s.webp`;
 }
 
 if (preloader) {
-  const progressBar  = preloader.querySelector('.loader-progress');
-  const percentText  = preloader.querySelector('.loader-percent');
-  const labelEl      = preloader.querySelector('.loader-label');
-
-  // ── Devicon URLs mirrored from the physics simulation ──────────────────────
-  const DEVICON_URLS = [
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/qt/qt-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/keras/keras-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/arduino/arduino-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg'
-  ];
-
-  // ── Asset counters ──────────────────────────────────────────────────────────
-  let resolvedCount = 0;
-  const assetPromises = [];
-
-  // Helper: wrap an image element load into a Promise
-  function trackImage(img, label) {
-    return new Promise(resolve => {
-      if (img.complete && img.naturalWidth > 0) { resolve(); return; }
-      const done = () => { resolve(); };
-      img.addEventListener('load',  done, { once: true });
-      img.addEventListener('error', done, { once: true });
-      // Per-image 8 s safety net
-      setTimeout(resolve, 8000);
-    });
-  }
-
-  // Helper: wrap a video into a Promise (resolves when it can play)
-  function trackVideo(videoEl, label) {
-    return new Promise(resolve => {
-      if (!videoEl) { resolve(); return; }
-      if (videoEl.readyState >= 3) { resolve(); return; } // HAVE_FUTURE_DATA
-      const done = () => { resolve(); };
-      videoEl.addEventListener('canplaythrough', done, { once: true });
-      videoEl.addEventListener('error',          done, { once: true });
-      // 5 s safety net for videos (may be large)
-      setTimeout(resolve, 5000);
-    });
-  }
-
-  // Register a promise and hook it to progress update
-  function registerAsset(promise) {
-    assetPromises.push(promise);
-    promise.then(() => {
-      resolvedCount++;
-      updateProgress();
-    });
-  }
-
-  function setLabel(text) {
-    if (labelEl) labelEl.textContent = text;
-  }
-
-  function updateProgress() {
-    const total   = assetPromises.length;
-    const percent = total ? Math.min(99, Math.round((resolvedCount / total) * 100)) : 0;
-    if (progressBar) progressBar.style.width = `${percent}%`;
-    if (percentText)  percentText.textContent  = `${percent}%`;
-  }
-
-  // ── 1. HTML <img> elements ─────────────────────────────────────────────────
-  setLabel('Loading images…');
-  Array.from(document.images).forEach(img => {
-    registerAsset(trackImage(img, img.src));
-  });
-
-  // ── 2. Background videos ────────────────────────────────────────────────────
-  setLabel('Loading videos…');
-  const bgVideoDark  = document.getElementById('bg-video-dark');
-  const bgVideoLight = document.getElementById('bg-video-light');
-  registerAsset(trackVideo(bgVideoDark,  'bg-dark'));
-  registerAsset(trackVideo(bgVideoLight, 'bg-light'));
-
-  // ── 3. Devicon skill SVGs ──────────────────────────────────────────────────
-  setLabel('Loading skill icons…');
-  DEVICON_URLS.forEach(url => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    // Store in a global cache so the physics simulation reuses the same objects
-    if (!window._deviconCache) window._deviconCache = {};
-    window._deviconCache[url] = img;
-    img.src = url;
-    registerAsset(trackImage(img, url));
-  });
-
-  // ── 4. Scrolly canvas frame sequence ───────────────────────────────────────
-  setLabel('Loading intro frames…');
-  for (let i = 0; i < totalFrames; i++) {
-    const img = new Image();
-    img.src = getFrameUrl(i);
-    preloadedFrames.push(img);
-
-    // Wrap frame load + optional decode into one promise
-    const framePromise = new Promise(resolve => {
-      const onLoad = () => {
-        if (typeof img.decode === 'function') {
-          img.decode().then(resolve).catch(resolve);
-        } else {
-          resolve();
-        }
-      };
-      if (img.complete && img.naturalWidth > 0) { onLoad(); return; }
-      img.addEventListener('load',  onLoad,   { once: true });
-      img.addEventListener('error', resolve,  { once: true });
-      setTimeout(resolve, 10000); // per-frame 10 s cap
-    });
-    registerAsset(framePromise);
-  }
-
-  // ── 5. Leaflet tile map ────────────────────────────────────────────────────
+  const progressBar = preloader.querySelector('.loader-progress');
+  const percentText = preloader.querySelector('.loader-percent');
+  const statusText = preloader.querySelector('.loader-label');
+  const docImages = Array.from(document.images);
+  
   const mapContainer = document.getElementById('map');
-  if (mapContainer) {
-    setLabel('Loading map…');
-    registerAsset(initializeLeafletMap());
-  }
+  const deviconCount = Object.keys(deviconMap).length;
+  
+  const videosToLoad = [
+    document.getElementById('preloader-bg-video'),
+    document.getElementById('bg-video-dark'),
+    document.getElementById('bg-video-light')
+  ].filter(Boolean);
 
-  // ── Finish: wait for everything + minimum display time ─────────────────────
-  const MIN_DISPLAY_MS   = 800;   // never dismiss in < 800 ms
-  const HARD_TIMEOUT_MS  = 12000; // bail out after 12 s regardless
-  const startedAt = performance.now();
+  // Total assets to load
+  const total = docImages.length + totalFrames + (mapContainer ? 1 : 0) + deviconCount + videosToLoad.length + 1;
+  let loaded = 0;
 
-  // Hard-ceiling promise
-  const hardTimeout = new Promise(resolve => setTimeout(resolve, HARD_TIMEOUT_MS));
+  function updateProgress(assetName = '') {
+    const percent = total ? Math.round((loaded / total) * 100) : 100;
+    if (progressBar) progressBar.style.width = `${percent}%`;
+    if (percentText) percentText.textContent = `${percent}%`;
+    
+    if (statusText && assetName) {
+      statusText.textContent = `Loading ${assetName}...`;
+    }
 
-  Promise.race([
-    Promise.all(assetPromises),
-    hardTimeout
-  ]).then(() => {
-    // Force bar to 100 %
-    resolvedCount = assetPromises.length;
-    if (progressBar) progressBar.style.width = '100%';
-    if (percentText)  percentText.textContent  = '100%';
-    setLabel('Ready!');
-
-    // Ensure minimum display time so the user actually sees the preloader
-    const elapsed   = performance.now() - startedAt;
-    const remaining = Math.max(0, MIN_DISPLAY_MS - elapsed);
-
-    setTimeout(() => {
+    if (percent >= 100) {
       preloader.classList.add('finished');
       document.body.classList.remove('preloader-active');
       if (window.initializeScrollyCanvas) {
         window.initializeScrollyCanvas();
       }
       setTimeout(updateUnderline, 300);
-
-      // Release preloader video memory
+      // Clean up preloader video to stop decoding and save CPU resources
       setTimeout(() => {
-        const vid = preloader.querySelector('#preloader-bg-video');
-        if (vid) { vid.pause(); vid.src = ''; vid.load(); vid.remove(); }
+        const video = preloader.querySelector('#preloader-bg-video');
+        if (video) {
+          video.pause();
+          video.src = "";
+          video.load();
+          video.remove();
+        }
       }, 600);
-    }, remaining);
-  });
+    }
+  }
 
-  // Show initial 0 %
-  updateProgress();
+  if (total === 0) {
+    loaded = total;
+    updateProgress();
+  } else {
+    // 1. Load document images (eagerly loaded)
+    docImages.forEach(img => {
+      if (img.complete) {
+        loaded++;
+        updateProgress('images');
+      } else {
+        img.addEventListener('load', () => { loaded++; updateProgress('images'); });
+        img.addEventListener('error', () => { loaded++; updateProgress('images'); });
+      }
+    });
+
+    // 2. Load Leaflet Map
+    if (mapContainer) {
+      initializeLeafletMap().then(() => {
+        loaded++;
+        updateProgress('interactive map');
+      });
+    }
+
+    // 3. Preload scrolly canvas frames
+    for (let i = 0; i < totalFrames; i++) {
+      const img = new Image();
+      img.src = getFrameUrl(i);
+      img.onload = () => {
+        if (typeof img.decode === 'function') {
+          img.decode()
+            .then(() => {
+              loaded++;
+              updateProgress('3D sequence');
+            })
+            .catch(() => {
+              loaded++;
+              updateProgress('3D sequence');
+            });
+        } else {
+          loaded++;
+          updateProgress('3D sequence');
+        }
+      };
+      img.onerror = () => {
+        loaded++;
+        updateProgress('3D sequence');
+      };
+      preloadedFrames.push(img);
+    }
+
+    // 4. Preload Devicon SVGs
+    Object.keys(deviconMap).forEach(key => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.src = deviconMap[key];
+      img.onload = () => {
+        loadedImages[key] = img;
+        loaded++;
+        updateProgress('tech icons');
+      };
+      img.onerror = () => {
+        loaded++;
+        updateProgress('tech icons');
+      };
+    });
+
+    // 5. Preload background/preloader videos
+    videosToLoad.forEach(video => {
+      if (video.readyState >= 3) {
+        loaded++;
+        updateProgress('media streams');
+      } else {
+        let hasLoaded = false;
+        const onVideoLoad = () => {
+          if (!hasLoaded) {
+            hasLoaded = true;
+            loaded++;
+            updateProgress('media streams');
+            video.removeEventListener('canplay', onVideoLoad);
+            video.removeEventListener('loadeddata', onVideoLoad);
+          }
+        };
+        video.addEventListener('canplay', onVideoLoad);
+        video.addEventListener('loadeddata', onVideoLoad);
+        
+        // Touch/mobile devices fallback in 1.5s to bypass mobile prefetch block
+        const touchDevice = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+        const videoTimeout = touchDevice ? 1500 : 4500;
+        setTimeout(onVideoLoad, videoTimeout);
+      }
+    });
+
+    // 6. Preload Web Fonts
+    let fontsPromiseResolved = false;
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        if (!fontsPromiseResolved) {
+          fontsPromiseResolved = true;
+          loaded++;
+          updateProgress('typography');
+        }
+      }).catch(() => {
+        if (!fontsPromiseResolved) {
+          fontsPromiseResolved = true;
+          loaded++;
+          updateProgress('typography');
+        }
+      });
+    } else {
+      loaded++;
+      updateProgress('typography');
+    }
+
+    updateProgress();
+
+    // Fallback: after 15 seconds force completion if still not done
+    setTimeout(() => {
+      if (loaded < total) {
+        loaded = total;
+        updateProgress('assets');
+      }
+    }, 15000);
+  }
 }
-
 
 // ---- 1b. Scrolly Canvas Logic ----
 const canvas = document.getElementById('scrolly-canvas');
@@ -548,6 +566,9 @@ if (canvas && scrollyContainer) {
         mainEl.classList.remove('reveal-active');
         mainEl.classList.add('intro-done');
       }
+      if (typeof updateScrollProgress === 'function') {
+        updateScrollProgress();
+      }
       window.scrollTo(0, 0);
       window.removeEventListener('scroll', updateScrolly);
       return;
@@ -586,6 +607,9 @@ if (canvas && scrollyContainer) {
         mainEl.classList.add('reveal-active');
       } else {
         mainEl.classList.remove('reveal-active');
+      }
+      if (typeof updateScrollProgress === 'function') {
+        updateScrollProgress();
       }
     }
   }
@@ -917,6 +941,8 @@ const pages = document.querySelectorAll("[data-page]");
 
 navigationLinks.forEach(link => {
   link.addEventListener("click", function () {
+    // Reset sub-filter navigation state when switching tabs
+    subFilterModeActive = false;
     // Find the currently active page
     let currentIndex = -1;
     let oldPage = null;
@@ -1109,23 +1135,89 @@ navigationLinks.forEach(link => {
     }
   });
 
-  // ---- 10. Accessibility Arrow Key Tab Navigation ----
+  // ---- 10. Accessibility Arrow Key Tab & Sub-Filter Navigation ----
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-      const activeLink = document.querySelector('.navbar-link.active');
-      if (!activeLink) return;
-      
-      const links = Array.from(navigationLinks);
-      let index = links.indexOf(activeLink);
-      
-      if (e.key === 'ArrowLeft') {
-        index = (index - 1 + links.length) % links.length;
-      } else {
-        index = (index + 1) % links.length;
+    const activeArticle = document.querySelector('article.active');
+    if (!activeArticle) return;
+    
+    const pageName = activeArticle.getAttribute('data-page'); // 'skills', 'project', 'about', etc.
+    
+    // Collect sub-filter buttons if present on the active page
+    let subFilterButtons = [];
+    if (pageName === 'skills') {
+      subFilterButtons = Array.from(activeArticle.querySelectorAll('.skills-filter-btn[data-skill-filter]'));
+    } else if (pageName === 'project') {
+      subFilterButtons = Array.from(activeArticle.querySelectorAll('.skills-filter-btn[data-filter-btn]'));
+    }
+
+    const hasSubFilters = subFilterButtons.length > 0;
+
+    if (!subFilterModeActive) {
+      // Tab Navigation Mode
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        const activeLink = document.querySelector('.navbar-link.active');
+        if (!activeLink) return;
+        
+        const links = Array.from(navigationLinks);
+        let index = links.indexOf(activeLink);
+        
+        if (e.key === 'ArrowLeft') {
+          index = (index - 1 + links.length) % links.length;
+        } else {
+          index = (index + 1) % links.length;
+        }
+        
+        links[index].click();
+        links[index].focus();
+        e.preventDefault();
+      } else if (e.key === 'ArrowDown' && hasSubFilters) {
+        // Enter sub-filter navigation mode
+        subFilterModeActive = true;
+        // Focus either the currently active filter, or the first one
+        const activeFilterBtn = subFilterButtons.find(btn => btn.classList.contains('active')) || subFilterButtons[0];
+        if (activeFilterBtn) {
+          activeFilterBtn.focus();
+        }
+        e.preventDefault();
       }
-      
-      links[index].click();
-      links[index].focus();
+    } else {
+      // Sub-Filter Navigation Mode
+      if (e.key === 'ArrowUp') {
+        // Return to main tab navigation
+        subFilterModeActive = false;
+        const activeLink = document.querySelector('.navbar-link.active');
+        if (activeLink) {
+          activeLink.focus();
+        }
+        e.preventDefault();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        if (hasSubFilters) {
+          const focusedElement = document.activeElement;
+          let currentIndex = subFilterButtons.indexOf(focusedElement);
+          
+          // Fallback to active button index if focus is lost
+          if (currentIndex === -1) {
+            const activeBtn = subFilterButtons.find(btn => btn.classList.contains('active')) || subFilterButtons[0];
+            currentIndex = subFilterButtons.indexOf(activeBtn);
+          }
+
+          if (e.key === 'ArrowLeft') {
+            currentIndex = (currentIndex - 1 + subFilterButtons.length) % subFilterButtons.length;
+          } else {
+            currentIndex = (currentIndex + 1) % subFilterButtons.length;
+          }
+
+          const targetBtn = subFilterButtons[currentIndex];
+          if (targetBtn) {
+            targetBtn.click();
+            targetBtn.focus();
+          }
+          e.preventDefault();
+        }
+      } else if (e.key === 'ArrowDown') {
+        // Prevent browser scrolling while navigating sub-filters
+        e.preventDefault();
+      }
     }
   });
 
@@ -1193,63 +1285,7 @@ navigationLinks.forEach(link => {
       'fas fa-camera': { char: '\uf030', family: '"Font Awesome 5 Free"' }
     };
 
-    // Devicon CDN mapping for high-quality colorful vector logos
-    const deviconMap = {
-      'Python': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
-      'C': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg',
-      'Java': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg',
-      'C++': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg',
-      'Cython': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
-      'Pygame': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
-      'PyQt': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/qt/qt-original.svg',
-      'OpenCV': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/opencv/opencv-original.svg',
-      'Numpy': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/numpy/numpy-original.svg',
-      'Pandas': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pandas/pandas-original.svg',
-      'Tensorflow': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg',
-      'Keras': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/keras/keras-original.svg',
-      'Numba': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
-      'PyTorch': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg',
-      'ONNX': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
-      'MicroPython': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
-      'PySerial': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
-      'PyFirmata': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/arduino/arduino-original.svg',
-      'Bash': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-original.svg',
-      'HTML': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg',
-      'CSS': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg',
-      'JavaScript': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg',
-      'React': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg',
-      'Bootstrap': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg',
-      'TypeScript': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg',
-      'Tailwind CSS': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tailwindcss/tailwindcss-plain.svg',
-      'Node.js': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg',
-      'PHP': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg',
-      'Django': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg',
-      'Flask': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flask/flask-original.svg',
-      'MongoDB': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg',
-      'MySQL': 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg'
-    };
-
-    // Reuse images pre-fetched and decoded by the preloader.
-    // window._deviconCache is populated before the preloader dismisses,
-    // so by the time the Skills tab is ever opened all images are ready.
-    const loadedImages = {};
-    Object.keys(deviconMap).forEach(key => {
-      const url       = deviconMap[key];
-      const cached    = window._deviconCache && window._deviconCache[url];
-      if (cached && cached.complete && cached.naturalWidth > 0) {
-        loadedImages[key] = cached;
-      } else {
-        // Fallback: create a fresh Image if cache miss (shouldn't happen normally)
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.src = url;
-        img.onload = () => { loadedImages[key] = img; };
-        img.onerror = () => { console.warn(`Devicon fallback load failed: ${key}`); };
-        // Also store in cache for consistency
-        if (!window._deviconCache) window._deviconCache = {};
-        window._deviconCache[url] = img;
-      }
-    });
+    // Devicon mapping and preload store are defined in DOMContentLoaded outer scope
 
     let activeEngine = null;
     let canvasContainer = null;
@@ -2708,4 +2744,128 @@ initTimelineCometGlow();
       closeProjectModal();
     }
   });
+
+  // ---- 20. Floating Scroll Progress & Navigation Button ----
+  const scrollBtn = document.getElementById('scroll-nav-btn');
+  const scrollIcon = document.getElementById('scroll-arrow-icon');
+  const progressBar = scrollBtn ? scrollBtn.querySelector('.progress-bar') : null;
+  const themeToggle = document.getElementById('theme-toggle');
+  let lastScrollY = window.scrollY || document.documentElement.scrollTop;
+
+  let targetPercent = 0;
+  let currentPercent = 0;
+  let animFrameId = null;
+
+  function drawProgress() {
+    if (!scrollBtn || !progressBar) return;
+
+    // Buttery-smooth linear interpolation (lerp) towards target scroll position
+    const diff = targetPercent - currentPercent;
+    if (Math.abs(diff) > 0.0002) {
+      currentPercent += diff * 0.16; // 0.16 lerp factor provides snappy but highly responsive easing
+      animFrameId = requestAnimationFrame(drawProgress);
+    } else {
+      currentPercent = targetPercent;
+      animFrameId = null;
+    }
+
+    // Update progress bar stroke-dashoffset (radius is 24px, circumference is 150.8px)
+    const r = 24;
+    const circumference = 2 * Math.PI * r; // 150.8
+    const offset = circumference - (currentPercent * circumference);
+    progressBar.style.strokeDashoffset = offset;
+  }
+
+  function updateScrollProgress() {
+    // Hide and disable both buttons while the scrolly canvas intro is active
+    const isIntroActive = !mainEl || (!mainEl.classList.contains('reveal-active') && !mainEl.classList.contains('intro-done'));
+
+    if (isIntroActive) {
+      if (scrollBtn) {
+        scrollBtn.style.opacity = '0';
+        scrollBtn.style.pointerEvents = 'none';
+      }
+      if (themeToggle) {
+        themeToggle.style.opacity = '0';
+        themeToggle.style.pointerEvents = 'none';
+      }
+      return;
+    } else {
+      if (scrollBtn) {
+        scrollBtn.style.opacity = '1';
+        scrollBtn.style.pointerEvents = 'auto';
+      }
+      if (themeToggle) {
+        themeToggle.style.opacity = '1';
+        themeToggle.style.pointerEvents = 'auto';
+      }
+    }
+
+    if (!scrollBtn || !progressBar) return;
+
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    
+    // Set target percentage (0 to 1)
+    targetPercent = docHeight > 0 ? scrollTop / docHeight : 0;
+    targetPercent = Math.max(0, Math.min(1, targetPercent));
+
+    // Kick off animation loop if not already running
+    if (!animFrameId) {
+      animFrameId = requestAnimationFrame(drawProgress);
+    }
+
+    // Detect scroll direction and boundaries
+    if (scrollTop <= 5) {
+      // Force DOWN arrow at the very top of the page
+      scrollBtn.classList.add('scroll-down');
+      scrollBtn.classList.remove('scroll-up');
+      if (scrollIcon) {
+        scrollIcon.className = 'fa-solid fa-chevron-down';
+      }
+    } else if (scrollTop >= docHeight - 5) {
+      // Force UP arrow at the very bottom of the page
+      scrollBtn.classList.add('scroll-up');
+      scrollBtn.classList.remove('scroll-down');
+      if (scrollIcon) {
+        scrollIcon.className = 'fa-solid fa-chevron-up';
+      }
+    } else {
+      // General scroll direction detection
+      if (scrollTop > lastScrollY) {
+        // Scrolling DOWN
+        scrollBtn.classList.add('scroll-down');
+        scrollBtn.classList.remove('scroll-up');
+        if (scrollIcon) {
+          scrollIcon.className = 'fa-solid fa-chevron-down';
+        }
+      } else if (scrollTop < lastScrollY) {
+        // Scrolling UP
+        scrollBtn.classList.add('scroll-up');
+        scrollBtn.classList.remove('scroll-down');
+        if (scrollIcon) {
+          scrollIcon.className = 'fa-solid fa-chevron-up';
+        }
+      }
+    }
+    
+    lastScrollY = scrollTop;
+  }
+
+  if (scrollBtn) {
+    scrollBtn.addEventListener('click', () => {
+      const isUp = scrollBtn.classList.contains('scroll-up');
+      if (isUp) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+      }
+    });
+
+    window.addEventListener('scroll', updateScrollProgress, { passive: true });
+    window.addEventListener('resize', updateScrollProgress, { passive: true });
+    
+    // Run initially to set starting state
+    updateScrollProgress();
+  }
 });

@@ -3655,6 +3655,10 @@ main.intro-done {
   cursor: pointer;
   outline: none;
   -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  will-change: opacity, transform;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* Toggle track */
@@ -4772,47 +4776,83 @@ article.active .cv-btn-container {
 }
 
 /*-----------------------------------*\
-  #BACK TO TOP BUTTON
+  #SCROLL NAVIGATION BUTTON
 \*-----------------------------------*/
 
-.back-to-top {
-  display: inline-flex !important;
+.scroll-nav-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 56px;
+  height: 56px;
+  z-index: 1000;
+  cursor: pointer;
+  display: flex;
   align-items: center;
-  gap: 5px;
-  text-decoration: none;
-  transition: color var(--transition-1) !important;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--bg-gradient-jet);
+  border: 1px solid var(--jet);
+  box-shadow: var(--shadow-2);
+  transition: opacity 0.4s ease, transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, transform;
+  opacity: 0;
+  pointer-events: none;
 }
 
-.back-to-top i {
-  display: inline-block;
-  font-size: 0.9em;
-  transition: transform 0.2s ease, color 0.2s ease;
-  animation: floatArrow 2.5s ease-in-out infinite;
+.scroll-nav-btn:hover {
+  transform: scale(1.08);
+  box-shadow: var(--shadow-3);
 }
 
-.back-to-top:hover {
-  color: var(--orange-yellow-crayola) !important;
+.scroll-nav-btn:active {
+  transform: scale(0.95);
 }
 
-.back-to-top:hover i {
-  animation: jumpArrow 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) infinite;
-  color: var(--orange-yellow-crayola) !important;
+.scroll-nav-btn svg.progress-circle {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 56px;
+  height: 56px;
+  pointer-events: none;
 }
 
-@keyframes floatArrow {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-4px);
-  }
+.scroll-nav-btn circle.progress-track {
+  stroke: rgba(128, 128, 128, 0.15);
 }
 
-@keyframes jumpArrow {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-7px);
-  }
+.scroll-nav-btn circle.progress-bar {
+  stroke: var(--orange-yellow-crayola);
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 28px 28px;
+}
+
+.scroll-nav-btn .scroll-arrow-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: var(--white-1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Micro-animations */
+.scroll-nav-btn.scroll-down:hover .scroll-arrow-box {
+  animation: bounceDown 1.2s infinite;
+}
+
+.scroll-nav-btn.scroll-up:hover .scroll-arrow-box {
+  animation: bounceUp 1.2s infinite;
+}
+
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
+@keyframes bounceUp {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
 }
