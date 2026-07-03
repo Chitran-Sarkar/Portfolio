@@ -1,3 +1,21 @@
+/*
+ * ============================================================
+ *  components/toast.css — Toast Notification System
+ * ============================================================
+ *  Slide-in / slide-out notification toasts that appear in
+ *  the bottom-right corner. Triggered by showToast() in
+ *  globals.js.
+ *
+ *  Contents:
+ *    • .toast-container  – Fixed stack anchor (bottom-right)
+ *    • .toast            – Base pill: slide-in off-screen
+ *    • .toast.show       – Visible state with transition
+ *    • .toast.success    – Green accent variant
+ *    • .toast.error      – Red accent variant
+ *    • .toast-icon       – FontAwesome icon inside toast
+ *    • .toast-message    – Text content span
+ * ============================================================
+ */
 
 /* Toast Notifications */
 .toast-container {

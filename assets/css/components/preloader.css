@@ -1,3 +1,23 @@
+/*
+ * ============================================================
+ *  components/preloader.css — Preloader Overlay
+ * ============================================================
+ *  Full-screen loading overlay shown while assets are fetched.
+ *  Removed via body.preloader-active class once JS completes.
+ *
+ *  Contents:
+ *    • body.preloader-active    – Hides main content during load
+ *    • .preloader               – Fixed overlay + video bg
+ *    • .preloader.finished      – Fade-out exit state
+ *    • .preloader-content       – Centering wrapper
+ *    • .preloader-title         – Name/brand heading
+ *    • @keyframes pulseTitle    – Heartbeat glow on title
+ *    • .loader-bar              – Progress track container
+ *    • .loader-progress         – Animated fill bar
+ *    • .loader-status / -label  – Asset loading status text
+ *    • .loader-percent          – Numeric % counter
+ * ============================================================
+ */
 
 /*-----------------------------------*\
   #PRELOADER & TOAST & GLOW UPGRADES

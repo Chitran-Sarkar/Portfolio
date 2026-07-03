@@ -1,3 +1,27 @@
+/*
+ * ============================================================
+ *  components/project-modal.css — Project Detail Modal
+ * ============================================================
+ *  Full-screen lightbox that expands when a project card is
+ *  clicked. Split-panel layout on desktop, stacked on mobile.
+ *
+ *  Contents:
+ *    • .project-modal-container  – Fixed overlay wrapper
+ *    • .project-modal-overlay    – Click-to-close backdrop
+ *    • .project-modal            – Modal panel + open states
+ *    • .project-modal-content    – Flex grid (preview | info)
+ *    • .project-modal-preview    – Left image panel
+ *    • .project-modal-meta       – Title, category, description
+ *    • .project-modal-info       – Right info panel
+ *    • .tech-tag                 – Technology stack pills
+ *    • .project-modal-btn        – Repo / live demo buttons
+ *    • @keyframes                – zoomAndMoveLeft,
+ *                                   extendRightPanel,
+ *                                   mobileSlideUp/Down
+ *    • @media (max-width: 767px) – Mobile stacked layout
+ *    • [data-theme="light"]      – Light mode overrides
+ * ============================================================
+ */
 
 /*-----------------------------------*\
   #PROJECT DETAIL MODAL

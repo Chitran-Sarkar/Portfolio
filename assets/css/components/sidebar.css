@@ -1,3 +1,25 @@
+/*
+ * ============================================================
+ *  components/sidebar.css — Sidebar Panel
+ * ============================================================
+ *  Styles for the collapsible left sidebar that holds the
+ *  avatar, name, title badge, contact details, and socials.
+ *
+ *  Contents:
+ *    • article display + transform-origin (tab panel base)
+ *    • .main layout container
+ *    • .sidebar collapsed / expanded states
+ *    • .sidebar-info  – avatar container, nebula glow anim
+ *    • @keyframes nebulaDustAnimation
+ *    • .avatar-box, .name-svg, @keyframes drawText
+ *    • .info-content title badge
+ *    • .info_more-btn (mobile expand trigger)
+ *    • .sidebar-info_more (expandable contact block)
+ *    • .contacts-list, .contact-item, .contact-info
+ *    • .social-list, .social-item, .social-link
+ * ============================================================
+ */
+
 article {
   display: none;
   transform-origin: center center;

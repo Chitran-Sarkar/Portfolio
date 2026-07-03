@@ -1,3 +1,23 @@
+/*
+ * ============================================================
+ *  components/scroll-btn.css — Floating Scroll Navigation
+ * ============================================================
+ *  Fixed floating button (bottom-right) showing scroll progress
+ *  as a circular SVG ring. Arrow toggles between up/down based
+ *  on scroll direction. Hidden during the scrolly canvas intro.
+ *
+ *  Contents:
+ *    • .scroll-nav-btn          – Position, size, glass style
+ *    • @media (max-width: 1023px)– Mobile sizing adjustments
+ *    • Hover / active states    – Scale + glow interactions
+ *    • svg.progress-circle      – SVG ring container
+ *    • .progress-track          – Static background ring
+ *    • .progress-bar            – Animated stroke-dashoffset
+ *    • .scroll-arrow-box        – Inner arrow icon wrapper
+ *    • @keyframes bounceDown /  – Arrow idle bounce animations
+ *      bounceUp
+ * ============================================================
+ */
 
 /*-----------------------------------*\
   #SCROLL NAVIGATION BUTTON

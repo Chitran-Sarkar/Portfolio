@@ -1,3 +1,25 @@
+/*
+ * ============================================================
+ *  components/cursor.css — Custom Cursor + Leaflet Map
+ * ============================================================
+ *  Replaces the native OS cursor with a stylised dot cursor
+ *  that reacts to pointer/text/grab contexts. Also contains
+ *  all Leaflet map overrides and the custom pulsing marker.
+ *
+ *  Contents:
+ *    • .cursor               – Base dot, pointer, text states
+ *    • .cursor-pointer       – Enlarged on interactive elements
+ *    • .cursor-text          – I-beam style on inputs
+ *    • .cursor-blink         – Click pulse animation
+ *    • @keyframes cursorBlink
+ *    • @media (min-width: 1024px) – Cursor enabled on desktop only
+ *    • #map / .leaflet-*     – Map container & control overrides
+ *    • .custom-map-marker    – Glowing location dot
+ *    • @keyframes markerPulse
+ *    • .cursor-grab /        – Drag state over map / physics
+ *      .cursor-grabbing
+ * ============================================================
+ */
 
 /* Custom cursor */
 .cursor {

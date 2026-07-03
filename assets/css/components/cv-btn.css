@@ -1,3 +1,18 @@
+/*
+ * ============================================================
+ *  components/cv-btn.css — Download CV Button
+ * ============================================================
+ *  Animated floating button that appears on the About tab
+ *  to let visitors download the CV.
+ *
+ *  Contents:
+ *    • .cv-btn-container        – Positioning wrapper
+ *    • .cv-btn                  – Button base + hover glow
+ *    • .cv-btn ion-icon         – Download arrow icon
+ *    • @keyframes cvBtnEntrance – Slide-up entrance animation
+ *    • article.active           – Trigger entrance on tab activate
+ * ============================================================
+ */
 
 /*-----------------------------------*\
   #CV BUTTON

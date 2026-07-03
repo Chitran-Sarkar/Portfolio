@@ -1,3 +1,23 @@
+/*
+ * ============================================================
+ *  components/theme-toggle.css — Dark / Light Mode Toggle
+ * ============================================================
+ *  Pill-shaped toggle switch that swaps dark ↔ light themes.
+ *  Actual theme variable overrides live in theme/light-mode.css.
+ *
+ *  Contents:
+ *    • .theme-toggle         – Fixed position wrapper, opacity
+ *                               control (hidden during scrolly)
+ *    • .toggle-track         – Pill background + star CSS art
+ *    • .toggle-icon          – Sun / moon icon containers
+ *    • .toggle-thumb         – Sliding circle knob
+ *    • Hover effects         – Scale + glow on hover
+ *    • @media (max-width:    – Mobile bottom-right position
+ *      1023px)
+ *    • @media (min-width:    – Desktop sidebar position
+ *      1024px)
+ * ============================================================
+ */
 
 /*-----------------------------------*\
   #THEME TOGGLE

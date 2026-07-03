@@ -1,3 +1,21 @@
+/*
+ * ============================================================
+ *  components/navbar.css — Navigation Bar
+ * ============================================================
+ *  Styles for the top navigation bar and its sliding active
+ *  underline pill indicator.
+ *
+ *  Contents:
+ *    • .navbar               – Container (fixed on desktop)
+ *    • .navbar-list          – Flex row of nav links
+ *    • .navbar-link          – Individual tab buttons,
+ *                               active & hover states
+ *    • .navbar-underline     – CSS animated sliding pill
+ *    • Glassmorphism tweaks  – .sidebar/article backdrop
+ *    • Hover transition set  – .service-item, .project-item,
+ *                               .skills-item smooth hovers
+ * ============================================================
+ */
 
 /*-----------------------------------*\
   #NAVBAR
