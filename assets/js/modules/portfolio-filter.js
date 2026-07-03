@@ -1,3 +1,18 @@
+/**
+ * ============================================================
+ *  modules/portfolio-filter.js — Project Portfolio Filter
+ * ============================================================
+ *  Powers the filter system on the Portfolio tab: both the
+ *  mobile dropdown and the desktop button row.
+ *
+ *  Exposes on window:
+ *    • filterFunc(value)   – Shows/hides .project-item by category
+ *    • filterBtn           – NodeList of desktop filter buttons
+ *    • selectValue         – Dropdown selected-value span
+ *
+ *  Depends on: globals.js (elementToggleFunc)
+ * ============================================================
+ */
 
   // ---- 4. Custom select dropdown logic ----
   const select = document.querySelector("[data-select]");

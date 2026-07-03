@@ -1,3 +1,22 @@
+/*
+ * ============================================================
+ *  style.css — CSS Entry Point / Orchestrator
+ * ============================================================
+ *  This file contains ONLY @import statements.
+ *  It wires all split CSS modules together in the correct
+ *  cascade order. Edit the individual module files, not here.
+ *
+ *  Load order (must not be changed):
+ *    1. base.css        – Variables, reset, typography
+ *    2. layout.css      – Glow borders, reused styles, utilities
+ *    3. components/     – Sidebar, navbar, preloader, cursor, etc.
+ *    4. pages/          – Tab-specific styles (about, resume, …)
+ *    5. sections/       – Full-screen sections (scrolly, videos)
+ *    6. theme/          – Light-mode overrides
+ *    7. responsive.css  – All @media breakpoints (must be last)
+ * ============================================================
+ */
+
 /* ─── Font ─── */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap');
 

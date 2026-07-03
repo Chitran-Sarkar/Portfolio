@@ -1,4 +1,24 @@
 
+/**
+ * ============================================================
+ *  modules/cursor.js — Custom Cursor Controller
+ * ============================================================
+ *  Creates a custom cursor <div> and tracks its position.
+ *  The cursor changes state based on what element the user
+ *  hovers (pointer, text, grab). Only active on desktop
+ *  (cursor is hidden on touch/mobile via CSS).
+ *
+ *  States managed:
+ *    • Default    – Small dot
+ *    • .cursor-pointer – Enlarged on buttons/links
+ *    • .cursor-text    – I-beam on inputs
+ *    • .cursor-grab    – Open hand on draggable elements
+ *    • .cursor-blink   – Click pulse flash
+ *
+ *  Depends on: none
+ * ============================================================
+ */
+
   // Sidebar fullscreen intro animation disabled – sidebar remains static.
 
   // ---- 9. Custom cursor logic ----

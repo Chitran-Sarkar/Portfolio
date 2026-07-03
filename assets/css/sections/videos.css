@@ -1,3 +1,19 @@
+/*
+ * ============================================================
+ *  sections/videos.css — Background Video Styles
+ * ============================================================
+ *  Manages two looping background videos — one for dark mode
+ *  and one for light mode. Videos are swapped via JS when the
+ *  theme toggles and are loaded at the correct resolution
+ *  (mobile / desktop / raw 4K) by video-init.js.
+ *
+ *  Contents:
+ *    • .preloader-video  – Video inside the preloader overlay
+ *    • .bg-video         – Shared fixed-cover base styles
+ *    • #bg-video-dark    – Dark mode video (default visible)
+ *    • #bg-video-light   – Light mode video (hidden by default)
+ * ============================================================
+ */
 
 /* Shifted from inline HTML attributes */
 .preloader-video {

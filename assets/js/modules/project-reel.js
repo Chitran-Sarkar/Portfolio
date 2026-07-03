@@ -1,3 +1,21 @@
+/**
+ * ============================================================
+ *  modules/project-reel.js — Serpentine Project Card Reel
+ * ============================================================
+ *  Animates project cards in a serpentine (snake) pattern:
+ *  rows alternate left-to-right and right-to-left in a
+ *  continuous looping reel driven by requestAnimationFrame.
+ *
+ *  Behaviour:
+ *    • Auto-pauses when the project modal is open
+ *    • Pauses on card hover (.isPaused flag)
+ *    • Re-calculates card dimensions on resize (responsive)
+ *    • Adapts row count based on viewport width
+ *    • Scales card aspect ratio for mobile vs desktop
+ *
+ *  Depends on: none (reads the DOM directly)
+ * ============================================================
+ */
 
   // ---- 15. Serpentine Project Reel Animation ----
   function initProjectReelAnimation() {

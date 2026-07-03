@@ -1,3 +1,23 @@
+/**
+ * ============================================================
+ *  modules/timeline-comet.js — Resume Timeline Comet & Glow
+ * ============================================================
+ *  Runs a continuous requestAnimationFrame loop that moves a
+ *  "comet" along the resume timeline's vertical line.
+ *  As the comet passes each timeline dot and the icon box,
+ *  those elements receive a CSS --glow-intensity variable that
+ *  drives their glow brightness in real time.
+ *
+ *  Only active when the Resume tab article is .active.
+ *  Falls back gracefully if the tab is not visible.
+ *
+ *  Also exports:
+ *    • decodeHtml(html)  – HTML entity decoder used by
+ *                           typing-animation.js
+ *
+ *  Depends on: none
+ * ============================================================
+ */
 
   // ---- 17. Resume Timeline Comet & Glow Animation ----
   function initTimelineCometGlow() {

@@ -1,3 +1,24 @@
+/*
+ * ============================================================
+ *  pages/about.css — About Tab
+ * ============================================================
+ *  All styles scoped to the About page tab.
+ *
+ *  Contents:
+ *    • .about-text              – Intro paragraph styling
+ *    • #about-head summary      – "Know More" expandable toggle
+ *    • details[open]            – Expanded state transitions
+ *    • @keyframes linkBlink /   – Typing cursor animations
+ *      cursorBlink
+ *    • #left, #right            – Decorative font sections
+ *    • #grey, #element          – Typed.js target element
+ *    • .service                 – Service cards (what I do)
+ *    • .testimonials            – Testimonial card list
+ *    • .modal-container /       – Testimonial lightbox modal
+ *      .testimonials-modal
+ *    • .clients                 – Client logo grid
+ * ============================================================
+ */
 
 /*-----------------------------------*\
   #ABOUT
@@ -404,4 +425,3 @@ details[open] summary {
 }
 
 .clients-item img:hover { filter: grayscale(0); }
-

@@ -1,3 +1,20 @@
+/*
+ * ============================================================
+ *  pages/portfolio.css — Portfolio / Projects Tab
+ * ============================================================
+ *  Contents:
+ *    • .filter-list            – Desktop filter button row
+ *    • .filter-select-box      – Mobile dropdown wrapper
+ *    • .filter-select          – Styled dropdown trigger
+ *    • .select-list/-item      – Dropdown options
+ *    • .project-list           – Serpentine reel container
+ *    • .project-item           – Individual project card
+ *    • @keyframes scaleUp      – Card entrance animation
+ *    • .project-img            – Thumbnail image box
+ *    • .project-item-icon-box  – Hover overlay icon
+ *    • .project-title/-category– Card text
+ * ============================================================
+ */
 
 /*-----------------------------------*\
   #PORTFOLIO
@@ -156,4 +173,3 @@
   font-size: var(--fs-6);
   font-weight: var(--fw-300);
 }
-

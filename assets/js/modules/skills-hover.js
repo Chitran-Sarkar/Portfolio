@@ -1,3 +1,23 @@
+/**
+ * ============================================================
+ *  modules/skills-hover.js — Skill Progress Bar Loop Animation
+ * ============================================================
+ *  On mouseenter each .skills-item, the progress bar animates
+ *  from 0% to its target value, then loops indefinitely until
+ *  the user moves away.
+ *  On mouseleave it snaps back to the final target value.
+ *
+ *  Why loop? – Keeps the skills section feeling alive; bars
+ *  continuously cycle so the animation never feels static.
+ *
+ *  Reads:
+ *    • progressIntervals  (globals.js) – Clears any tab-load
+ *                          interval for the same bar to prevent
+ *                          conflicts with the initial animation.
+ *
+ *  Depends on: globals.js (progressIntervals)
+ * ============================================================
+ */
 
   // ---- 18. Loop progress bar animation on hover ----
   function initSkillsHoverAnimation() {

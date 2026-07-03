@@ -1,3 +1,25 @@
+/**
+ * ============================================================
+ *  modules/typing-animation.js — "Know More" Typing Effect
+ * ============================================================
+ *  Animates the hidden paragraphs inside the About tab's
+ *  <details> element, typing them out character-by-character
+ *  when the section is expanded and clearing them on close.
+ *
+ *  Behaviour:
+ *    • On details[open]  – Types all <p> tags sequentially
+ *    • On details close  – Clears all paragraphs instantly
+ *    • Uses typingSeqId   – Cancels any running sequence
+ *                           if the panel is toggled mid-type
+ *    • HTML-safe typer   – Handles HTML tags by injecting
+ *                           whole tags at once (no broken markup)
+ *
+ *  Calls:
+ *    • decodeHtml()  (defined in timeline-comet.js)
+ *
+ *  Depends on: timeline-comet.js (for decodeHtml)
+ * ============================================================
+ */
 
   // ---- 10. Details Know More Typing Animation ----
   const details = document.querySelector('.about-text details');

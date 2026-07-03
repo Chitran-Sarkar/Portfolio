@@ -1,3 +1,20 @@
+/*
+ * ============================================================
+ *  pages/contact.css — Contact Tab
+ * ============================================================
+ *  Contents:
+ *    • .mapbox               – Leaflet map container panel
+ *    • .contact-form         – Form wrapper
+ *    • .input-wrapper        – Label + input group
+ *    • .form-input           – Styled text / email inputs
+ *    • textarea              – Message area
+ *    • .form-btn             – Send button styles + states
+ *    • .form-btn.btn-fleeing – Runaway invalid-state button
+ *    • @keyframes formShake  – Shake animation on bad submit
+ *    • @keyframes            – btnReadyPulse when form is valid
+ *    • .form-btn:disabled    – Disabled appearance
+ * ============================================================
+ */
 
 /*-----------------------------------*\
   #CONTACT

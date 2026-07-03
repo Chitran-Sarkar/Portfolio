@@ -1,3 +1,21 @@
+/**
+ * ============================================================
+ *  modules/contact-form.js — Contact Form & Web3Forms
+ * ============================================================
+ *  Handles all contact form behaviour:
+ *    • Real-time validation   – Enables/disables Send button
+ *    • Shake animation        – On submit while form is invalid
+ *    • Runaway button         – Send button flees the cursor
+ *                               when form is incomplete
+ *    • Form submission        – POST to Web3Forms API via fetch
+ *    • Toast feedback         – Success / error notifications
+ *
+ *  ⚠️  Update WEB3FORMS_ACCESS_KEY with your own key from
+ *       https://web3forms.com/ before deploying.
+ *
+ *  Depends on: globals.js (showToast)
+ * ============================================================
+ */
 
   // ---- 6. Web3Forms and Form validation setup ----
   // Get your free Web3Forms Access Key here: https://web3forms.com/
@@ -153,4 +171,3 @@
       });
     });
   }
-

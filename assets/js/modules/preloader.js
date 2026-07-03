@@ -1,3 +1,27 @@
+/**
+ * ============================================================
+ *  modules/preloader.js — Asset Preloader & Leaflet Map Init
+ * ============================================================
+ *  Tracks loading progress of ALL site assets and drives the
+ *  preloader progress bar. Finishes by calling
+ *  window.initializeScrollyCanvas() when 100% is reached.
+ *
+ *  Assets tracked (6 categories):
+ *    1. Document images        (<img> tags in DOM)
+ *    2. Leaflet map            (resolves after tile load)
+ *    3. Scrolly canvas frames  (60 WebP frames preloaded)
+ *    4. Devicon SVGs           (tech icon library)
+ *    5. Background videos      (dark + light + preloader)
+ *    6. Web fonts              (document.fonts.ready)
+ *
+ *  Globals set on window:
+ *    • subFilterModeActive     – Shared nav state flag
+ *    • mapInstance             – Leaflet L.map instance
+ *
+ *  Depends on: globals.js (deviconMap, loadedImages,
+ *              totalFrames, preloadedFrames, updateUnderline)
+ * ============================================================
+ */
 
   let subFilterModeActive = false;
 

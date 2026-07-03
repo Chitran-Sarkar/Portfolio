@@ -1,3 +1,26 @@
+/**
+ * ============================================================
+ *  modules/scrolly.js — Cinematic Scrolly Canvas Animation
+ * ============================================================
+ *  Drives the full-viewport intro sequence. As the user scrolls
+ *  through 500vh, this module:
+ *    • Draws pre-loaded WebP frames onto a <canvas> (like video)
+ *    • Fades overlay text sections in/out with parallax
+ *    • Reveals the main portfolio layout at 80% scroll progress
+ *    • Locks and hides the container at 100% (intro complete)
+ *
+ *  Exposes on window:
+ *    • initializeScrollyCanvas()   – Called by preloader on finish
+ *    • mainEl                      – DOM ref used by scroll-btn.js
+ *
+ *  Calls (must exist first):
+ *    • window.updateScrollProgress  (defined in scroll-btn.js)
+ *    • preloadedFrames[]            (from globals.js)
+ *    • totalFrames                  (from globals.js)
+ *
+ *  Depends on: globals.js, scroll-btn.js (for updateScrollProgress)
+ * ============================================================
+ */
 
 // ---- 1b. Scrolly Canvas Logic ----
 const canvas = document.getElementById('scrolly-canvas');

@@ -1,3 +1,23 @@
+/*
+ * ============================================================
+ *  base.css — Foundation Layer
+ * ============================================================
+ *  MUST be the first CSS file imported.
+ *  Defines all CSS custom properties (design tokens) that
+ *  every other module references via var().
+ *
+ *  Contents:
+ *    • @font-face  – Vivaldi local font
+ *    • :root       – Color palette, typography scale, shadows,
+ *                     transition tokens
+ *    • Reset       – Box-model, list, anchor, display resets
+ *    • Typography  – h1–h4 font families, global body styles
+ *    • Inputs      – button / input / textarea base styles
+ *    • Selection   – ::selection, :focus colours
+ *    • Body states – body.sidebar-overlaying, .sidebar-fullscreen
+ * ============================================================
+ */
+
 /*-----------------------------------*\
   #CUSTOM PROPERTY
 \*-----------------------------------*/

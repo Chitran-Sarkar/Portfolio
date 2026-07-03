@@ -1,3 +1,22 @@
+/*
+ * ============================================================
+ *  responsive.css — All Media Query Breakpoints
+ * ============================================================
+ *  MUST be the last CSS file imported so it correctly
+ *  overrides base/component/page styles at each breakpoint.
+ *
+ *  Breakpoints covered:
+ *    • min-width: 450px   – Clients grid, portfolio grid
+ *    • min-width: 580px   – Sidebar expand, navbar, service cols
+ *    • min-width: 768px   – Contacts 2-col, filter list visible
+ *    • max-width: 1024px  – Article min-height clamp
+ *    • min-width: 1024px  – Desktop sticky sidebar, navbar reposition,
+ *                            about 2-col grid, portfolio 3-col
+ *    • min-width: 1250px  – Full sidebar, main flex row,
+ *                            scrollbar show, contacts 1-col
+ *    • min-width: 2000px  – 4K / ultra-wide typography scale-up
+ * ============================================================
+ */
 
 /*-----------------------------------*\
   #RESPONSIVE
@@ -735,4 +754,3 @@
     top: 80px; /* Adjust sticky positioning offset */
   }
 }
-

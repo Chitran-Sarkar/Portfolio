@@ -1,3 +1,29 @@
+/**
+ * ============================================================
+ *  modules/physics.js — Skills Bubble Physics Simulation
+ * ============================================================
+ *  The largest module (~920 lines). Runs a full Matter.js
+ *  rigid-body simulation where each programming language skill
+ *  becomes an interactive bubble that can be dragged, thrown,
+ *  and collides with walls and other bubbles.
+ *
+ *  Pipeline:
+ *    1. Parse skill names from the DOM
+ *    2. Map each name to its Devicon SVG (via deviconMap)
+ *    3. Create a Matter.js Engine + Render loop
+ *    4. Spawn circular bodies (one per skill)
+ *    5. Render bodies onto a <canvas> with custom 3D drawing
+ *    6. Handle mouse/touch drag and force events
+ *    7. Pause simulation when canvas is off-screen
+ *       (IntersectionObserver)
+ *
+ *  Reads:
+ *    • deviconMap    (globals.js) – SVG URL lookup
+ *    • loadedImages  (globals.js) – Pre-decoded Image cache
+ *
+ *  External library required: Matter.js (loaded before this file)
+ * ============================================================
+ */
 
   // ---- 12. Skills Physics Bubble Simulation ----
   const initSkillsPhysics = () => {

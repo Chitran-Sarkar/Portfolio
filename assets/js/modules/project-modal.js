@@ -1,3 +1,28 @@
+/**
+ * ============================================================
+ *  modules/project-modal.js — Project Detail Modal
+ * ============================================================
+ *  Intercepts clicks on project cards in the portfolio reel
+ *  and opens a full-screen modal with the project's details:
+ *  title, category, image, description, tech stack, and
+ *  repo / live demo links.
+ *
+ *  Open triggers:
+ *    • Click on any .project-item a link
+ *    • Reads data-* attributes on the .project-item element
+ *
+ *  Close triggers:
+ *    • Close button (#projectModalCloseBtn)
+ *    • Overlay click (#projectModalOverlay)
+ *    • Escape key
+ *
+ *  Toast messages:
+ *    • Repo unavailable  – 'Project repository coming soon!'
+ *    • Live unavailable  – 'Project live demo coming soon!'
+ *
+ *  Depends on: globals.js (showToast)
+ * ============================================================
+ */
 
   // ---- 19. Project Modal Logic ----
   const projectModalContainer = document.getElementById('projectModalContainer');

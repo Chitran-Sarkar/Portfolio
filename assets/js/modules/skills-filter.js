@@ -1,4 +1,20 @@
 
+/**
+ * ============================================================
+ *  modules/skills-filter.js — Skills Tab Category Filter
+ * ============================================================
+ *  Manages the three-way filter on the Skills tab:
+ *  Technical / Programming / Soft Skills.
+ *  Also handles the mobile dropdown version of the same filter.
+ *
+ *  Exposes on window:
+ *    • skillFilterButtons    – Array of filter button elements
+ *    • applySkillFilter(f)   – Shows the matching skill section
+ *
+ *  Depends on: globals.js (elementToggleFunc)
+ * ============================================================
+ */
+
 // ---- 5. Skills Tab filter logic (Technical, Programming, Soft) ----
 const skillFilterButtons = Array.from(document.querySelectorAll('.skills-filter-btn[data-skill-filter]')).filter(btn => btn.getAttribute('data-skill-filter') !== 'all');
 const skillSections = [

@@ -1,3 +1,20 @@
+/**
+ * ============================================================
+ *  modules/theme-toggle.js — Dark / Light Theme Toggle Logic
+ * ============================================================
+ *  Persists the user's preferred theme in localStorage and
+ *  applies it on load (preventing flash of wrong theme).
+ *  Also fires a custom 'theme-change' event so other modules
+ *  (e.g. physics canvas, Leaflet map) can react to the switch.
+ *
+ *  Storage key: 'portfolio-theme'  (values: 'dark' | 'light')
+ *  DOM target:  document.documentElement [data-theme] attribute
+ *
+ *  Dispatches: CustomEvent('theme-change', { detail: { theme } })
+ *
+ *  Depends on: none
+ * ============================================================
+ */
 
   // ---- 16. Theme Toggle (Dark ↔ Light) ----
   function initThemeToggle() {

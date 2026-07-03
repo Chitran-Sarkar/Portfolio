@@ -1,3 +1,20 @@
+/**
+ * ============================================================
+ *  modules/tilt.js — 3D Card Tilt Hover Effect
+ * ============================================================
+ *  Applies a CSS perspective tilt on mousemove to service
+ *  cards, project cards, the sidebar, and the contact form.
+ *  On mouseleave the tilt resets smoothly.
+ *
+ *  Selectors affected:
+ *    • .service-item   – About tab service cards
+ *    • .project-item   – Portfolio project cards
+ *    • .sidebar        – Main profile sidebar panel
+ *    • .contact-form   – Contact page form wrapper
+ *
+ *  Depends on: none
+ * ============================================================
+ */
 
   // ---- 14. 3D Card Tilt Hover Effect ----
   function initTiltEffect() {
@@ -49,4 +66,3 @@
     }
   }
   initTiltEffect();
-

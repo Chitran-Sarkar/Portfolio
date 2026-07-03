@@ -1,3 +1,28 @@
+/**
+ * ============================================================
+ *  modules/navigation.js — Tab Page Navigation
+ * ============================================================
+ *  Handles switching between all portfolio tab pages with
+ *  directional enter/exit CSS animations.
+ *  Also resets filter states and invalidates the Leaflet map
+ *  size when navigating to the Contact tab.
+ *
+ *  Exposes on window:
+ *    • navigationLinks  – NodeList of [data-nav-link] elements
+ *                          (used by keyboard-nav.js)
+ *
+ *  Calls (must already exist):
+ *    • updateUnderline()       (globals.js)
+ *    • applyBreatheAnimation() (globals.js)
+ *    • mapInstance             (preloader.js)
+ *    • filterFunc              (portfolio-filter.js)
+ *    • skillFilterButtons      (skills-filter.js)
+ *    • applySkillFilter        (skills-filter.js)
+ *
+ *  Depends on: globals.js, preloader.js,
+ *              portfolio-filter.js, skills-filter.js
+ * ============================================================
+ */
 
 // ---- 7. Page Navigation logic ----
 const navigationLinks = document.querySelectorAll("[data-nav-link]");

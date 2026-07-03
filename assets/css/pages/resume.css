@@ -1,3 +1,22 @@
+/*
+ * ============================================================
+ *  pages/resume.css — Resume / Experience Tab
+ * ============================================================
+ *  Contents:
+ *    • .timeline                – Section wrapper
+ *    • .timeline-list::before  – Animated comet vertical line
+ *    • .title-wrapper glow vars – CSS --glow-intensity token
+ *    • .timeline-item/title/text– Entry rows + dot markers
+ *    • .ex                     – Experience list items
+ *    • .skills-title           – Section headings
+ *    • .skills-grid            – Technical skill card grid
+ *    • .skills-container       – Wrapper for skill lists
+ *    • .skill-list li          – Individual skill pill cards
+ *    • .skill-progress-bg/fill – Animated progress bar
+ *    • @keyframes              – progressSheenSweep shimmer
+ *    • .front                  – Front-end skills accent
+ * ============================================================
+ */
 
 /*-----------------------------------*\
   #RESUME

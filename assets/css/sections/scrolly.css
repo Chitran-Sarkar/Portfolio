@@ -1,3 +1,23 @@
+/*
+ * ============================================================
+ *  sections/scrolly.css — Cinematic Scrolly Canvas Intro
+ * ============================================================
+ *  Full-viewport animated intro sequence driven by JS scroll.
+ *  Occupies 500vh to give the scroll-driven animation space.
+ *
+ *  Contents:
+ *    • .scrolly-container     – 500vh scroll spacer
+ *    • .scrolly-sticky        – Fixed viewport during intro
+ *    • #scrolly-canvas        – WebP frame animation canvas
+ *    • .scrolly-overlay       – Gradient fade overlays
+ *    • .scrolly-section       – Scroll text panels
+ *    • .parallax-text         – Fade-in/out overlay text
+ *    • main reveal transitions – .reveal-active, .intro-done
+ *    • @keyframes floatDev/   – Floating image animations
+ *      floatEd                   used by #right img
+ *    • Physics canvas         – .physics-canvas-container
+ * ============================================================
+ */
 
 /*-----------------------------------*\
   #SCROLLY CANVAS INTRO
@@ -218,4 +238,3 @@ main.intro-done {
   transform-origin: center;
   will-change: transform;
 }
-

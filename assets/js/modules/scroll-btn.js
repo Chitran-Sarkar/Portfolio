@@ -1,3 +1,30 @@
+/**
+ * ============================================================
+ *  modules/scroll-btn.js — Floating Scroll Progress Button
+ * ============================================================
+ *  Manages the fixed floating button (bottom-right corner)
+ *  that shows page scroll progress as a circular SVG ring
+ *  and scrolls to the top or bottom when clicked.
+ *
+ *  Features:
+ *    • Progress ring  – Smooth lerp animation of SVG
+ *                       stroke-dashoffset (circumference: ~150.8px)
+ *    • Arrow toggle   – ↓ while scrolling down, ↑ while scrolling up
+ *                       Forced ↓ at page top, ↑ at page bottom
+ *    • Intro hiding   – Opacity 0 + pointer-events none while
+ *                       the scrolly canvas intro is active
+ *    • Click action   – Scrolls to top (when ↑) or bottom (when ↓)
+ *
+ *  Exposes on window:
+ *    • updateScrollProgress()  – Called by scrolly.js on each
+ *                                 scroll frame during the intro
+ *
+ *  Reads:
+ *    • mainEl  (scrolly.js)  – Used to detect if intro is active
+ *
+ *  Depends on: scrolly.js (for window.mainEl)
+ * ============================================================
+ */
 
   // ---- 20. Floating Scroll Progress & Navigation Button ----
   const scrollBtn = document.getElementById('scroll-nav-btn');

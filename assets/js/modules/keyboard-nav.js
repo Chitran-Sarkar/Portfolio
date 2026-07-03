@@ -1,3 +1,23 @@
+/**
+ * ============================================================
+ *  modules/keyboard-nav.js — Arrow Key Accessibility Navigation
+ * ============================================================
+ *  Enables full keyboard navigation across tabs and sub-filters
+ *  without a mouse.
+ *
+ *  Key bindings:
+ *    ← / →  – Move between navbar tabs (default mode)
+ *    ↓       – Enter sub-filter mode (Skills / Portfolio tabs)
+ *    ← / →  – Move between filter buttons (sub-filter mode)
+ *    ↑       – Exit sub-filter mode, return to tab navigation
+ *
+ *  Reads:
+ *    • subFilterModeActive   (window — set by globals.js)
+ *    • navigationLinks       (window — set by navigation.js)
+ *
+ *  Depends on: globals.js, navigation.js
+ * ============================================================
+ */
 
   // ---- 10. Accessibility Arrow Key Tab & Sub-Filter Navigation ----
   document.addEventListener('keydown', (e) => {

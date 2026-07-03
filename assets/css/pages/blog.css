@@ -1,3 +1,17 @@
+/*
+ * ============================================================
+ *  pages/blog.css — Blog Tab
+ * ============================================================
+ *  Contents:
+ *    • .blog-posts/-list       – Outer wrapper and card list
+ *    • .blog-post-item > a     – Full-card clickable link
+ *    • .blog-banner-box        – Featured image thumbnail
+ *    • .blog-content           – Text area inside card
+ *    • .blog-meta              – Category + date row
+ *    • .blog-item-title        – Post headline
+ *    • .blog-text              – Excerpt / summary text
+ * ============================================================
+ */
 
 /*-----------------------------------*\
   #BLOG

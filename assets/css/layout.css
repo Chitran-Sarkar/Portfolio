@@ -1,3 +1,24 @@
+/*
+ * ============================================================
+ *  layout.css — Global Layout & Shared Styles
+ * ============================================================
+ *  Depends on: base.css (CSS variables must be loaded first)
+ *
+ *  Contents:
+ *    • Animated gradient glow borders  – @property, conic-gradient
+ *                                         rotation on .Main-c / .sidebar
+ *    • Reused styles                  – .sidebar/article glass panel,
+ *                                         .separator, .icon-box,
+ *                                         .content-card, #image
+ *    • Article animations             – @keyframes turnNext/Prev,
+ *                                         exitNext/Prev, article-title
+ *    • Scrollbar                      – .has-scrollbar custom track
+ *    • Footer                         – .footer, .foot, wave SVG
+ *    • Filter buttons                 – .filter-btn, .skills-filter-buttons
+ *    • Utility animations             – @keyframes breathe, rise, corporate
+ * ============================================================
+ */
+
 /*-----------------------------------*\
   #ANIMATED GRADIENT GLOW BORDERS
 \*-----------------------------------*/

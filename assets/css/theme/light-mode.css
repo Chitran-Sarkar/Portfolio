@@ -1,3 +1,29 @@
+/*
+ * ============================================================
+ *  theme/light-mode.css — Light Theme Overrides
+ * ============================================================
+ *  All [data-theme="light"] selector overrides in one place.
+ *  Applied when the user toggles to light mode; toggled by JS
+ *  setting data-theme="light" on <html>.
+ *
+ *  Contents:
+ *    • :root overrides        – CSS variable replacements
+ *    • Body / video           – Background video swap
+ *    • Sidebar / article      – Glass panel light tones
+ *    • Navbar / scrolly       – Nav link colours
+ *    • Glow borders / cards   – Reduced opacity borders
+ *    • Service / social icons – Icon colour resets
+ *    • Skills / progress bars – Light bg fills
+ *    • Map / Leaflet          – Tile-layer light skin
+ *    • Form inputs            – Light input backgrounds
+ *    • Preloader / toast      – Light overlay variants
+ *    • Cursor                 – Cursor colour inversion
+ *    • Footer / project cards – Remaining component overrides
+ *    • Smooth transition list – Global transition-property
+ *                               selector for theme switching
+ *    • Theme-toggle positions – Mobile + desktop placement
+ * ============================================================
+ */
 
 /* ===== LIGHT THEME VARIABLE OVERRIDES ===== */
 
