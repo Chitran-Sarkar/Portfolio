@@ -1,0 +1,95 @@
+
+/*-----------------------------------*\
+  #SCROLL NAVIGATION BUTTON
+\*-----------------------------------*/
+
+.scroll-nav-btn {
+  --scroll-nav-size: clamp(2.875rem, 3.8vw, 3.5rem);
+  --scroll-nav-bottom: clamp(1.25rem, 2vw, 1.75rem);
+  --scroll-nav-right: clamp(1.25rem, 2vw, 1.75rem);
+
+  position: fixed;
+  bottom: var(--scroll-nav-bottom);
+  right: var(--scroll-nav-right);
+  width: var(--scroll-nav-size);
+  height: var(--scroll-nav-size);
+  z-index: 1000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--bg-gradient-jet);
+  border: 1px solid var(--jet);
+  box-shadow: var(--shadow-2);
+  transition: opacity 0.4s ease, transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, transform;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Mobile / Tablet overrides to clear bottom navbar */
+@media (max-width: 1023px) {
+  .scroll-nav-btn {
+    --scroll-nav-size: clamp(2.75rem, 5vw, 3.125rem);
+    --scroll-nav-bottom: clamp(4.5rem, 9vh, 5.25rem);
+    --scroll-nav-right: clamp(0.75rem, 2vw, 1.25rem);
+  }
+}
+
+.scroll-nav-btn:hover {
+  transform: scale(1.08);
+  box-shadow: var(--shadow-3);
+}
+
+.scroll-nav-btn:active {
+  transform: scale(0.95);
+}
+
+.scroll-nav-btn svg.progress-circle {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: calc(var(--scroll-nav-size) + 2px);
+  height: calc(var(--scroll-nav-size) + 2px);
+  pointer-events: none;
+}
+
+.scroll-nav-btn circle.progress-track {
+  stroke: rgba(128, 128, 128, 0.15);
+}
+
+.scroll-nav-btn circle.progress-bar {
+  stroke: var(--orange-yellow-crayola);
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: 28px 28px;
+}
+
+.scroll-nav-btn .scroll-arrow-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--scroll-nav-size) * 0.28);
+  color: var(--white-1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Micro-animations */
+.scroll-nav-btn.scroll-down:hover .scroll-arrow-box {
+  animation: bounceDown 1.2s infinite;
+}
+
+.scroll-nav-btn.scroll-up:hover .scroll-arrow-box {
+  animation: bounceUp 1.2s infinite;
+}
+
+@keyframes bounceDown {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
+@keyframes bounceUp {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}

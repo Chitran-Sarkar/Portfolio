@@ -1,0 +1,92 @@
+
+/*-----------------------------------*\
+  #NAVBAR
+\*-----------------------------------*/
+
+.navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(18, 18, 22, 0.8) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.3);
+  z-index: 5;
+}
+
+.navbar-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px;
+  gap: 5px;
+}
+
+.navbar-link {
+  cursor: none;
+  position: relative;
+  z-index: 1;
+  color: var(--light-gray);
+  font-size: clamp(0.95rem, 1.2vw + 0.6rem, 1.4rem);
+  padding: 16px 12px;
+  margin: 6px 0;
+  border-radius: 10px;
+  transition: color var(--transition-1), background-color var(--transition-1), transform var(--transition-1);
+  font-family: "Jaini Purva", system-ui;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.navbar-link:hover,
+.navbar-link:focus {
+  color: var(--white-1);
+  background-color: rgba(255, 188, 94, 0.04);
+}
+
+.navbar-link.active { 
+  color: var(--orange-yellow-crayola);
+  text-shadow: 0 0 10px rgba(255, 188, 94, 0.4);
+}
+
+/* Navbar sliding active pill */
+.navbar-underline {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: 0;
+  height: auto;
+  width: 0;
+  background: rgba(255, 188, 94, 0.12);
+  border: 1px solid rgba(255, 188, 94, 0.35);
+  box-shadow: 0 0 15px rgba(255, 188, 94, 0.2);
+  border-radius: 10px;
+  transition: left 0.35s cubic-bezier(0.25, 1, 0.5, 1), width 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+  pointer-events: none;
+  display: block;
+  z-index: 0; /* aligned behind links content */
+}
+
+/* Glassmorphism refinements & Glow up effects */
+.sidebar,
+article {
+  background: rgba(18, 18, 22, 0.72) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.65) !important;
+}
+
+/* Smooth transitions and hover lifts */
+.service-item, .project-item, .skills-item {
+  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.35s ease, box-shadow 0.35s ease !important;
+}
+
+.service-item:hover, .project-item:hover {
+  transform: translateY(-6px) !important;
+  border-color: var(--orange-yellow-crayola) !important;
+  box-shadow: 0 12px 28px rgba(255, 188, 94, 0.18) !important;
+}

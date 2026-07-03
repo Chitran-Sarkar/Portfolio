@@ -1,0 +1,461 @@
+
+/* ===== LIGHT THEME VARIABLE OVERRIDES ===== */
+
+[data-theme="light"] {
+  --bg-gradient-onyx: linear-gradient(
+    to bottom right,
+    hsl(40, 30%, 92%) 3%,
+    hsl(40, 20%, 88%) 97%
+  );
+  --bg-gradient-jet: linear-gradient(
+    to bottom right,
+    hsla(40, 20%, 94%, 0.9) 0%,
+    hsla(40, 15%, 90%, 0.6) 100%
+  ), hsl(40, 20%, 95%);
+  --bg-gradient-yellow-1: linear-gradient(
+    to bottom right,
+    hsl(38, 90%, 62%) 0%,
+    hsla(36, 90%, 60%, 0) 50%
+  );
+  --bg-gradient-yellow-2: linear-gradient(
+    135deg,
+    hsla(38, 90%, 62%, 0.18) 0%,
+    hsla(35, 90%, 58%, 0) 59.86%
+  ), hsl(40, 20%, 95%);
+  --border-gradient-onyx: linear-gradient(
+    to bottom right,
+    hsl(0, 0%, 82%) 0%,
+    hsla(0, 0%, 82%, 0) 50%
+  );
+  --text-gradient-yellow: linear-gradient(
+    to right,
+    hsl(38, 85%, 48%),
+    hsl(30, 90%, 45%)
+  );
+
+  --jet: hsl(0, 0%, 85%);
+  --onyx: hsl(40, 15%, 90%);
+  --eerie-black-1: hsl(40, 18%, 95%);
+  --eerie-black-2: hsl(40, 18%, 93%);
+  --smoky-black: hsl(40, 15%, 96%);
+  --white-1: hsl(0, 0%, 15%);
+  --white-2: hsl(0, 0%, 18%);
+  --orange-yellow-crayola: hsl(38, 85%, 48%);
+  --vegas-gold: hsl(38, 55%, 42%);
+  --light-gray: hsl(0, 0%, 30%);
+  --light-gray-70: hsla(0, 0%, 30%, 0.7);
+  --bittersweet-shimmer: hsl(0, 55%, 48%);
+
+  --shadow-1: -4px 8px 24px hsla(0, 0%, 0%, 0.08);
+  --shadow-2: 0 16px 30px hsla(0, 0%, 0%, 0.06);
+  --shadow-3: 0 16px 40px hsla(0, 0%, 0%, 0.06);
+  --shadow-4: 0 25px 50px hsla(0, 0%, 0%, 0.05);
+  --shadow-5: 0 24px 80px hsla(0, 0%, 0%, 0.08);
+}
+
+/* Body background */
+[data-theme="light"] body {
+  background: #f5f0e8 !important;
+}
+
+/* Swappable theme background video styles */
+.bg-video {
+  transition: opacity 0.5s ease-in-out !important;
+}
+
+[data-theme="light"] #bg-video-dark {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+[data-theme="light"] #bg-video-light {
+  opacity: 1 !important;
+  pointer-events: auto;
+}
+
+/* Sidebar & article glassmorphism overrides */
+[data-theme="light"] .sidebar,
+[data-theme="light"] article {
+  background: rgba(255, 255, 255, 0.82) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+/* Navbar */
+[data-theme="light"] .navbar {
+  background: hsla(40, 20%, 96%, 0.88) !important;
+  border-color: hsl(0, 0%, 85%) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Scrolly intro section */
+[data-theme="light"] .scrolly-container {
+  background-color: #f5f0e8;
+}
+[data-theme="light"] .scrolly-sticky {
+  background-color: #f5f0e8;
+}
+[data-theme="light"] .scrolly-section .parallax-text {
+  color: hsl(0, 0%, 15%);
+  text-shadow: 0 4px 30px rgba(255, 255, 255, 0.8);
+}
+
+/* Main content border (animated gradient) */
+[data-theme="light"] .Main-c,
+[data-theme="light"] .sidebar {
+  background-image: none;
+}
+[data-theme="light"] .Main-c::before,
+[data-theme="light"] .Main-c::after,
+[data-theme="light"] .sidebar::before,
+[data-theme="light"] .sidebar::after {
+  background: conic-gradient(
+    from var(--gradient-angle),
+    hsl(38, 85%, 75%),
+    hsl(38, 50%, 60%),
+    hsl(40, 30%, 80%),
+    hsl(38, 50%, 60%),
+    hsl(38, 85%, 75%)
+  );
+}
+
+/* Content cards */
+[data-theme="light"] .content-card {
+  background: linear-gradient(
+    to bottom right,
+    hsl(0, 0%, 88%) 0%,
+    hsla(0, 0%, 88%, 0) 50%
+  );
+}
+[data-theme="light"] .content-card::before {
+  background: linear-gradient(
+    to bottom right,
+    hsla(40, 20%, 97%, 0.9) 0%,
+    hsla(40, 15%, 94%, 0.6) 100%
+  ), hsl(40, 18%, 96%);
+}
+
+/* Service items */
+[data-theme="light"] .service-item {
+  background: linear-gradient(
+    to bottom right,
+    hsl(0, 0%, 88%) 0%,
+    hsla(0, 0%, 88%, 0) 50%
+  );
+}
+[data-theme="light"] .service-item::before {
+  background: linear-gradient(
+    to bottom right,
+    hsla(40, 20%, 97%, 0.9) 0%,
+    hsla(40, 15%, 94%, 0.6) 100%
+  ), hsl(40, 20%, 96%);
+}
+
+/* Info title badge in sidebar */
+[data-theme="light"] .info-content .title {
+  background: hsl(40, 18%, 88%);
+  color: hsl(0, 0%, 25%);
+}
+
+/* Social icons */
+[data-theme="light"] .social-item .social-link i,
+[data-theme="light"] .social-item .social-link span {
+  color: hsl(0, 0%, 30%) !important;
+}
+[data-theme="light"] .social-item .social-link:hover i,
+[data-theme="light"] .social-item .social-link:hover span {
+  color: var(--orange-yellow-crayola) !important;
+}
+
+/* Skills section cards */
+[data-theme="light"] .skills-list.content-card {
+  background: hsl(40, 15%, 92%) !important;
+  border-color: hsl(40, 15%, 85%) !important;
+}
+[data-theme="light"] .skills-list.content-card h4 {
+  color: hsl(0, 0%, 45%);
+}
+
+/* Skills grid items */
+[data-theme="light"] .skill {
+  border-color: hsl(0, 0%, 78%);
+  color: hsl(0, 0%, 25%);
+}
+[data-theme="light"] .skill:hover {
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.12);
+}
+[data-theme="light"] .skills-grid i,
+[data-theme="light"] .material-symbols-outlined {
+  color: hsl(38, 80%, 45%);
+}
+
+/* Skill progress bars */
+[data-theme="light"] .skill-progress-bg {
+  background: hsl(0, 0%, 85%);
+}
+[data-theme="light"] .skill-progress-fill {
+  background: hsl(40, 18%, 92%);
+}
+
+/* Soft skills list */
+[data-theme="light"] .skill-list li {
+  background: hsl(40, 18%, 93%);
+  border-color: hsl(40, 15%, 85%);
+  color: hsl(0, 0%, 25%);
+}
+
+[data-theme="light"] .skill-list li:hover {
+  background: hsl(0, 0%, 100%);
+  border-color: var(--orange-yellow-crayola);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Timeline experience items */
+[data-theme="light"] .ex li {
+  background: hsl(40, 18%, 93%);
+}
+
+/* Map */
+[data-theme="light"] #map {
+  background: #e8e0d0;
+}
+[data-theme="light"] .leaflet-container {
+  background: #e8e0d0 !important;
+}
+[data-theme="light"] .leaflet-bar a {
+  background-color: hsl(40, 18%, 93%) !important;
+  color: hsl(0, 0%, 25%) !important;
+  border-bottom-color: hsl(0, 0%, 82%) !important;
+}
+[data-theme="light"] .leaflet-bar a:hover {
+  background-color: var(--orange-yellow-crayola) !important;
+  color: white !important;
+}
+[data-theme="light"] .leaflet-bar {
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Form inputs glassmorphism override */
+[data-theme="light"] .form-input {
+  background: rgba(255, 255, 255, 0.6) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: hsl(0, 0%, 15%) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+}
+[data-theme="light"] .form-input::placeholder {
+  color: rgba(0, 0, 0, 0.4) !important;
+}
+[data-theme="light"] .form-input:focus {
+  border-color: var(--orange-yellow-crayola) !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04), 0 0 12px rgba(255, 160, 60, 0.2) !important;
+}
+
+/* Preloader */
+[data-theme="light"] .preloader {
+  background: rgba(245, 240, 232, 0.98);
+}
+[data-theme="light"] .preloader-title {
+  -webkit-text-fill-color: transparent;
+  background: var(--text-gradient-yellow);
+  -webkit-background-clip: text;
+}
+[data-theme="light"] .loader-bar {
+  background: rgba(0, 0, 0, 0.06);
+}
+[data-theme="light"] .loader-status {
+  color: hsla(0, 0%, 30%, 0.7);
+}
+
+/* Toast notifications */
+[data-theme="light"] .toast {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: hsl(0, 0%, 15%);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+[data-theme="light"] .toast-message {
+  color: hsl(0, 0%, 20%);
+}
+
+/* Custom cursor */
+[data-theme="light"] .cursor {
+  border-color: hsl(38, 85%, 48%);
+  box-shadow: 0 0 10px hsl(38, 85%, 48%);
+}
+[data-theme="light"] .cursor-pointer {
+  background-color: rgba(200, 140, 30, 0.12);
+  border-color: hsl(38, 85%, 48%);
+}
+[data-theme="light"] .cursor-text {
+  background-color: hsl(38, 85%, 48%);
+  border-color: transparent;
+  box-shadow: 0 0 8px hsl(38, 85%, 48%);
+}
+
+/* Wave footer SVG */
+[data-theme="light"] .wavePath {
+  fill: hsl(38, 55%, 65%) !important;
+  fill-opacity: 0.35 !important;
+}
+
+/* Footer text */
+[data-theme="light"] .footer p {
+  color: hsl(0, 0%, 35%);
+}
+[data-theme="light"] .footer a {
+  color: hsl(38, 50%, 35%);
+}
+
+/* About section text */
+[data-theme="light"] .about-text,
+[data-theme="light"] .about-text p {
+  color: hsl(0, 0%, 30%);
+}
+[data-theme="light"] summary {
+  color: var(--orange-yellow-crayola);
+}
+
+/* Project card text */
+[data-theme="light"] .project-item-icon-box {
+  background: hsl(40, 18%, 90%);
+}
+
+/* Filter and select dropdown */
+[data-theme="light"] .filter-select {
+  background: hsl(40, 18%, 95%);
+  border-color: hsl(0, 0%, 82%);
+}
+[data-theme="light"] .select-list {
+  background: hsl(40, 18%, 95%);
+  border-color: hsl(0, 0%, 82%);
+}
+[data-theme="light"] .select-item button {
+  background: hsl(40, 18%, 95%);
+  color: hsl(0, 0%, 30%);
+}
+[data-theme="light"] .select-item button:hover {
+  background: hsl(40, 18%, 90%);
+}
+
+/* Scrollbar light mode */
+[data-theme="light"] body::-webkit-scrollbar-track {
+  background: hsl(40, 15%, 96%);
+}
+[data-theme="light"] body::-webkit-scrollbar-thumb {
+  border: 5px solid hsl(40, 15%, 96%);
+  background: hsla(0, 0%, 0%, 0.12);
+}
+[data-theme="light"] body::-webkit-scrollbar-thumb:hover {
+  background: hsla(0, 0%, 0%, 0.2);
+}
+
+/* Physics canvas in light mode */
+[data-theme="light"] .physics-canvas-container {
+  background: rgba(240, 235, 225, 0.4);
+  border-color: rgba(200, 160, 60, 0.15);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.04);
+}
+
+/* About-head span colors */
+[data-theme="light"] #about-head span {
+  color: var(--orange-yellow-crayola);
+}
+
+/* Grey name color */
+[data-theme="light"] #grey {
+  color: hsl(0, 0%, 55%);
+}
+
+/* Icon-box overrides */
+[data-theme="light"] .icon-box {
+  background: linear-gradient(
+    to bottom right,
+    hsl(0, 0%, 85%) 0%,
+    hsla(0, 0%, 85%, 0) 50%
+  );
+}
+[data-theme="light"] .icon-box::before {
+  background: hsl(40, 18%, 95%);
+}
+
+/* Sidebar fullscreen overlay */
+[data-theme="light"] .sidebar-fullscreen {
+  background: rgba(245, 240, 232, 0.95);
+}
+
+/* Smooth theme transition on key elements */
+body,
+.sidebar,
+article,
+.navbar,
+.navbar-link,
+.toggle-track,
+.toggle-thumb,
+.content-card,
+.content-card::before,
+.service-item,
+.service-item::before,
+.service-content-box,
+.service-item-title,
+.service-item-text,
+.form-input,
+.form-btn,
+.skill,
+.skill-list li,
+.skills-list.content-card,
+.skills-grid,
+.skill-progress-bg,
+.skill-progress-fill,
+.project-title,
+.project-category,
+.project-item-icon-box,
+.filter-select,
+.select-list,
+.select-item button,
+.icon-box,
+.icon-box::before,
+.info-content .name,
+.info-content .title,
+.contact-title,
+.contact-info .contact-link,
+.contact-info time,
+.contact-info address,
+.about-text,
+.about-text p,
+summary,
+.timeline-text,
+.timeline-item-title,
+.h2, .h3, .h4, .h5,
+.article-title::after,
+.separator,
+.footer p,
+.footer a,
+.toast,
+.toast-message,
+.preloader,
+.preloader-title,
+.loader-bar,
+.loader-status,
+.cursor,
+#map,
+.leaflet-container,
+.leaflet-bar,
+.leaflet-bar a,
+.scrolly-container,
+.scrolly-sticky,
+.wavePath {
+  transition-property: background, background-color, color, border-color, box-shadow, opacity, fill, fill-opacity;
+  transition-duration: 0.45s;
+  transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Don't let the global theme transition override specific animation properties */
+.toggle-thumb,
+.toggle-icon {
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1) !important;
+}

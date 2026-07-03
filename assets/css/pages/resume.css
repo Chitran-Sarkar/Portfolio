@@ -1,0 +1,292 @@
+
+/*-----------------------------------*\
+  #RESUME
+\*-----------------------------------*/
+
+
+
+
+/**
+ * education and experience 
+ */
+
+.timeline { 
+  margin-bottom: clamp(20px, 4vw, 40px); }
+
+.timeline .title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.timeline-list {
+  position: relative;
+  font-size: var(--fs-6);
+  margin-left: 45px;
+}
+
+.timeline-list::before {
+  content: "";
+  position: absolute;
+  top: -40px; /* aligns with mobile book icon-box center */
+  bottom: 15px; /* stop near the last item's dot, fading out */
+  left: -30px; /* aligns with mobile dot center */
+  width: 3px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(255, 188, 94, 0.15) 5%,
+    rgba(255, 188, 94, 0.95) 45%,
+    var(--white-1) 70%,
+    var(--white-1) 90%,
+    transparent 95%
+  ) no-repeat, linear-gradient(to bottom, var(--jet) 85%, transparent 100%) no-repeat;
+  background-size: 100% 120px, 100% 100%;
+  background-position: 0 var(--comet-y, -120px), 0 0;
+  filter: drop-shadow(0 0 6px rgba(255, 188, 94, 0.95)) drop-shadow(0 0 12px rgba(255, 188, 94, 0.6));
+  z-index: 0;
+}
+
+/* Dynamic glow styling for the timeline icon box and its icon */
+.timeline .title-wrapper .icon-box {
+  --glow-intensity: 0;
+  box-shadow: 
+    var(--shadow-1), 
+    0 0 calc(8px + var(--glow-intensity, 0) * 16px) rgba(255, 188, 94, calc(0.3 + var(--glow-intensity, 0) * 0.7));
+  transform: scale(calc(1 + var(--glow-intensity, 0) * 0.05));
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.timeline .title-wrapper .icon-box ion-icon {
+  color: rgb(255, calc(188 + 67 * var(--glow-intensity, 0)), calc(94 + 161 * var(--glow-intensity, 0)));
+  transition: color 0.1s ease;
+}
+
+.timeline-item { 
+  --glow-intensity: 0;
+  position: relative; 
+}
+
+.timeline-item:not(:last-child) { margin-bottom: 20px; }
+
+.timeline-item-title {
+  font-size: var(--fs-6);
+  line-height: 1.3;
+  margin-bottom: 7px;
+}
+
+.h4.timeline-item-title a,h4{
+  display: block;
+  text-decoration: none;
+}
+.h4.timeline-item-title a{
+  color:darkkhaki;
+}
+.h4.timeline-item-title a:visited{
+  color:rgb(103, 100, 51);
+}
+
+.timeline-list span {
+  color: var(--vegas-gold);
+  font-weight: var(--fw-400);
+  line-height: 1.6;
+}
+
+.timeline-item::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: -33px;
+  height: 6px;
+  width: 6px;
+  background: rgb(255, calc(188 + 67 * var(--glow-intensity, 0)), calc(94 + 161 * var(--glow-intensity, 0)));
+  border-radius: 50%;
+  box-shadow: 
+    0 0 0 4px var(--jet), 
+    0 0 calc(6px + var(--glow-intensity, 0) * 14px) rgba(255, 188, 94, calc(0.3 + var(--glow-intensity, 0) * 0.7));
+  transform: scale(calc(1 + var(--glow-intensity, 0) * 0.4));
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  z-index: 2;
+}
+
+.timeline-text {
+  color: var(--light-gray);
+  font-weight: var(--fw-300);
+  line-height: 1.6;
+}
+.ex {
+  color: var(--light-gray);
+}
+.ex li{
+  padding: 10px;
+  margin: 10px;
+  background: rgb(32, 32, 34);
+  border-radius: 5px;
+}
+
+
+/**
+ * skills 
+ */
+
+.skills-title {
+  margin-bottom: clamp(12px, 1.8vw, 22px);
+  padding-top: clamp(25px, 5vw, 50px);
+ }
+ .skills-grid {
+  display: grid;
+  gap: 20px;
+  padding: 10px;
+  
+  color:var(--light-gray);
+}
+.skills-grid i,.material-symbols-outlined{
+  color:rgb(255, 219, 112);
+}
+.skills-grid:hover{
+  transform: scale(1.1);
+  opacity: 1;
+}
+.skill{
+  padding-left: 5px;
+  border-radius: 5px;
+  border: rgb(63, 76, 76) solid 1px;
+}
+.skill:hover{
+  box-shadow: 2px 2px 6px rgb(255, 254, 254);
+}
+.skills-container {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.skills-list.content-card h4{
+  color: #4a5066;
+  font-size: clamp(1.5rem, 1.5vw + 1rem, 2rem);
+}
+.skills-list.content-card {
+  flex: 1 1 30%; /* Adjust the width as needed */
+  background: #3c3f46;
+  border: #3c3f46 1px solid;
+  border-radius: 5px;
+}
+.skill-list li {
+  position: relative;
+  background: rgb(32, 32, 34);
+  border: #3c3f46 1px solid;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 10px;
+  color: var(--light-gray);
+  transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.25s ease, border-color 0.25s ease, z-index 0.25s ease;
+  z-index: 1;
+}
+
+.skills-list {
+  padding: 20px;
+  transition: transform 0.25s cubic-bezier(0.25, 0.8, 0.25, 1),
+              box-shadow 0.25s ease;
+  will-change: transform;
+}
+
+.skills-list:hover {
+  transform: scale(1.025);
+  box-shadow: 0 8px 28px rgba(255, 188, 94, 0.18);
+}
+
+
+.skills-item:not(:last-child) { margin-bottom: 15px; }
+
+.skills .title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.skills .title-wrapper data {
+  color: var(--light-gray);
+  font-size: var(--fs-7);
+  font-weight: var(--fw-300);
+}
+
+.skill-progress-bg {
+  background: var(--jet);
+  width: 100%;
+  height: 8px;
+  border-radius: 10px;
+}
+
+.skill-progress-fill {
+  background: rgb(25, 25, 27);
+  height: 110%;
+  overflow: hidden;
+  border-radius: inherit;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+.skill-progress-fill div{
+  background: linear-gradient(to right,rgb(255, 111, 0),hsl(45, 100%, 71%),hsl(45, 100%, 71%),hsl(45, 100%, 71%),rgba(170, 207, 5, 0.674));
+  float:left;
+  height: 110%;
+
+}
+
+/* Glow effect for skills item h5, data and progress bar on hover */
+.skills-item {
+  transition: transform 0.25s ease;
+}
+
+.skills-item:hover {
+  transform: translateY(-2px);
+}
+
+.skills-item .h5,
+.skills-item data {
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.skills-item:hover .h5,
+.skills-item:hover data {
+  color: var(--orange-yellow-crayola) !important;
+  text-shadow: 0 0 10px rgba(255, 188, 94, 0.7);
+}
+
+.skills-item .skill-progress-fill div {
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.skills-item:hover .skill-progress-fill div {
+  box-shadow: 0 0 8px var(--orange-yellow-crayola);
+}
+
+/* Loop shimmer sheen sweep animation on hover */
+.skills-item:hover .skill-progress-fill div::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.45) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: progressSheenSweep 1.5s infinite linear;
+}
+
+@keyframes progressSheenSweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.front{
+  width:90%;
+  animation: front 3s;
+}

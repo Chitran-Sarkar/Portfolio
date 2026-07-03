@@ -1,0 +1,31 @@
+
+/* Shifted from inline HTML attributes */
+.preloader-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+}
+
+#bg-video-dark {
+  background: #111;
+}
+
+#bg-video-light {
+  background: #f5f0e8;
+  opacity: 0;
+}

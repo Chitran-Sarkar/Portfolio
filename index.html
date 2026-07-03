@@ -44,25 +44,9 @@
 <body class="preloader-active">
   <!-- Preloader Screen -->
   <div id="preloader" class="preloader">
-    <video id="preloader-bg-video" class="preloader-video" autoplay loop muted playsinline style="position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: 1; pointer-events: none;">
+    <video id="preloader-bg-video" class="preloader-video" autoplay loop muted playsinline>
       Your browser does not support the video tag.
     </video>
-    <script>
-      (function() {
-        var w = window.innerWidth;
-        var f = 'desktop';
-        if (w < 768) {
-          f = 'mobile';
-        } else if (w >= 1400) {
-          f = 'raw';
-        }
-        var v = document.getElementById('preloader-bg-video');
-        if (v) {
-          v.src = './assets/css/preloader/' + f + '/preloader.webm';
-          v.load();
-        }
-      })();
-    </script>
     <div class="preloader-content">
       <h1 class="preloader-title">Chitran Sarkar</h1>
       <div class="loader-bar"><div class="loader-progress"></div></div>
@@ -71,33 +55,12 @@
   </div>
   <div id="toastContainer" class="toast-container"></div>
   
-  <video id="bg-video-dark" class="bg-video" autoplay loop muted playsinline poster="./assets/images/matrix.webp" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; background: #111;">
+  <video id="bg-video-dark" class="bg-video" autoplay loop muted playsinline poster="./assets/images/matrix.webp">
     Your browser does not support the video tag.
   </video>
-  <video id="bg-video-light" class="bg-video" autoplay loop muted playsinline style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; object-fit: cover; z-index: -1; background: #f5f0e8; opacity: 0;">
+  <video id="bg-video-light" class="bg-video" autoplay loop muted playsinline>
     Your browser does not support the video tag.
   </video>
-  <script>
-    (function() {
-      var w = window.innerWidth;
-      var f = 'desktop';
-      if (w < 768) {
-        f = 'mobile';
-      } else if (w >= 1400) {
-        f = 'raw';
-      }
-      var vd = document.getElementById('bg-video-dark');
-      var vl = document.getElementById('bg-video-light');
-      if (vd) {
-        vd.src = './assets/css/background/' + f + '/background.webm';
-        vd.load();
-      }
-      if (vl) {
-        vl.src = './assets/css/background/' + f + '/background_light.webm';
-        vl.load();
-      }
-    })();
-  </script>
   
   <!--
     - #SCROLLY CANVAS INTRO
@@ -334,7 +297,7 @@
           <section id="about-head">
               <span id="left" class="left">
                 <p class="hi">Hi, My name is <span class="h2" id="grey">Chitran</span></p>
-                <p>I am a passionate as </p>          
+                <p>I am a passionate </p>          
                 <span id="element"></span>
               </span>
               <span id="right">
@@ -1224,21 +1187,38 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
   <!--
-    - custom js link
+    - Typed.js library
   -->
-  <script src="./assets/js/script.js"></script>
-
-
   <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
 
-   <!-- Setup and start animation! -->
-   <script>
-    var typed = new Typed('#element', {
-      strings: ['ML Engineer.','App Developer.', 'Graphic Designer.','Web Designer.','Web Developer.','IOT Developer.','Photographer.','Artist.'],
-      typeSpeed: 50,
-      loop: true
-    });
-  </script>
+  <!--
+    - custom js — globals first (no defer: must be available immediately),
+      then all modules in dependency order, finally the entry point.
+  -->
+  <script src="./assets/js/globals.js"></script>
+
+  <script src="./assets/js/modules/video-init.js" defer></script>
+  <script src="./assets/js/modules/preloader.js" defer></script>
+  <script src="./assets/js/modules/scrolly.js" defer></script>
+  <script src="./assets/js/modules/navbar.js" defer></script>
+  <script src="./assets/js/modules/sidebar.js" defer></script>
+  <script src="./assets/js/modules/portfolio-filter.js" defer></script>
+  <script src="./assets/js/modules/skills-filter.js" defer></script>
+  <script src="./assets/js/modules/contact-form.js" defer></script>
+  <script src="./assets/js/modules/navigation.js" defer></script>
+  <script src="./assets/js/modules/cursor.js" defer></script>
+  <script src="./assets/js/modules/keyboard-nav.js" defer></script>
+  <script src="./assets/js/modules/physics.js" defer></script>
+  <script src="./assets/js/modules/tilt.js" defer></script>
+  <script src="./assets/js/modules/project-reel.js" defer></script>
+  <script src="./assets/js/modules/theme-toggle.js" defer></script>
+  <script src="./assets/js/modules/timeline-comet.js" defer></script>
+  <script src="./assets/js/modules/typing-animation.js" defer></script>
+  <script src="./assets/js/modules/skills-hover.js" defer></script>
+  <script src="./assets/js/modules/project-modal.js" defer></script>
+  <script src="./assets/js/modules/scroll-btn.js" defer></script>
+
+  <script src="./assets/js/script.js" defer></script>
 
   <!--
     - ionicon link

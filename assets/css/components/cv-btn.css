@@ -1,0 +1,68 @@
+
+/*-----------------------------------*\
+  #CV BUTTON
+\*-----------------------------------*/
+
+.cv-btn-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 25px;
+  z-index: 10;
+  opacity: 0;
+}
+
+.cv-btn {
+  width: auto !important;
+  min-width: max-content;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 22px !important;
+  border-radius: 12px !important;
+  font-size: var(--fs-6) !important;
+  font-weight: var(--fw-500) !important;
+  border: 1px solid rgba(255, 188, 94, 0.25) !important;
+  text-decoration: none;
+  background: var(--border-gradient-onyx);
+  color: var(--orange-yellow-crayola) !important;
+  box-shadow: var(--shadow-2);
+  transition: all var(--transition-1) !important;
+}
+
+.cv-btn::before {
+  border-radius: inherit !important;
+}
+
+.cv-btn i {
+  font-size: 16px;
+  margin-right: 8px;
+  color: var(--orange-yellow-crayola);
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.cv-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(255, 188, 94, 0.35) !important;
+  border-color: var(--orange-yellow-crayola) !important;
+}
+
+.cv-btn:hover i {
+  transform: scale(1.15);
+  color: var(--white-1);
+}
+
+@keyframes cvBtnEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+article.active .cv-btn-container {
+  animation: cvBtnEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 0.4s;
+}
