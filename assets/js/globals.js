@@ -1,3 +1,26 @@
+/**
+ * ============================================================
+ *  globals.js — Shared Utilities & Global State
+ * ============================================================
+ *  Loaded WITHOUT defer so all utilities are synchronously
+ *  available before any deferred module runs.
+ *  NEVER wraps code in DOMContentLoaded — runs immediately.
+ *
+ *  Exposes on window (accessible by every module):
+ *    • elementToggleFunc(elem)     – Toggle .active class
+ *    • showToast(msg, type)        – Slide-in notification toast
+ *    • progressIntervals           – Map of bar-id → intervalId
+ *    • applyBreatheAnimation()     – Entry/exit tab animations
+ *    • updateUnderline()           – Slide navbar underline pill
+ *    • underline / navbar          – DOM refs used by navbar.js
+ *    • decodeHtml(html)            – HTML entity decoder
+ *    • preloadedFrames[]           – Scrolly canvas frame images
+ *    • totalFrames                 – Total frame count (60)
+ *    • deviconMap                  – Tech name → SVG URL map
+ *    • loadedImages                – Pre-decoded devicon Images
+ * ============================================================
+ */
+
 'use strict';
 
 // Element toggle function

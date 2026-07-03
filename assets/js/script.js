@@ -1,3 +1,21 @@
+/**
+ * ============================================================
+ *  script.js — Entry Point
+ * ============================================================
+ *  After the modular split this file is intentionally minimal.
+ *  Its only job is to initialise Typed.js once all libraries
+ *  and modules have loaded.
+ *
+ *  Load order (defined in index.html):
+ *    1. globals.js          – Utilities (no defer)
+ *    2. modules/*.js        – Feature modules (defer)
+ *    3. script.js (this)    – Final init (defer)
+ *
+ *  To add new global initialisation code, put it in the
+ *  appropriate module file, not here.
+ * ============================================================
+ */
+
 'use strict';
 
 // ─── Entry point ─────────────────────────────────────────────────────────────

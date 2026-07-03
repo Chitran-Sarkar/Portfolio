@@ -1,39 +1,83 @@
 <!DOCTYPE html>
+<!--
+  ============================================================
+  index.html — Chitran Sarkar Portfolio
+  ============================================================
+  Single-page portfolio website. All tabs share this one HTML
+  document; the active tab is controlled by JS + CSS classes.
+
+  Page structure (in document order):
+    HEAD
+      ├── Meta / SEO tags
+      ├── Favicon
+      ├── CSS: Leaflet → style.css (entry point) → FontAwesome
+      ├── Google Fonts preconnect + family imports
+      └── Inline theme-flash-prevention script
+
+    BODY
+      ├── #preloader          – Full-screen loading overlay
+      ├── #toastContainer     – Slide-in notification stack
+      ├── #bg-video-dark/light– Looping background videos
+      ├── #scrolly-container  – 500vh cinematic intro canvas
+      └── main
+            └── .main
+                  ├── aside.sidebar   – Profile / contacts panel
+                  └── .main-content
+                        ├── nav.navbar        – Tab navigation bar
+                        ├── article.about     – About / Services tab
+                        ├── article.resume    – Education / CV tab
+                        ├── article.skills    – Skills filter tab
+                        ├── article.portfolio – Projects reel tab
+                        └── article.contact   – Map + form tab
+
+    BODY (continued, after </main>)
+      ├── Third-party scripts  – Matter.js, Leaflet, Typed.js
+      ├── Custom JS modules    – globals.js → modules/* → script.js
+      ├── Ionicons             – Icon web component
+      ├── #theme-toggle        – Dark/Light toggle button
+      ├── #projectModalContainer – Project detail lightbox
+      ├── #toastContainer      – (second instance — active one)
+      └── #scroll-nav-btn      – Floating scroll progress button
+
+  CSS entry point:  assets/css/style.css   (imports all modules)
+  JS entry point:   assets/js/globals.js   (then modules/*.js)
+  ============================================================
+-->
 <html lang="en">
 
 <head>
+  <!-- ── Meta / SEO ─────────────────────────────────── -->
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Chitran Sarkar's professional portfolio. Web Developer, ML Engineer, and Graphic Designer.">
   <title>Chitran-Portfolio</title>
 
-  <!--
-    - favicon
-  -->
+  <!-- ── Favicon ────────────────────────────────────── -->
   <link rel="icon" type="image/png" href="./assets/images/icon.png">
 
-  <!--
-    - Leaflet CSS link
-  -->
+  <!-- ── Stylesheets ─────────────────────────────────── -->
+  <!-- Leaflet map CSS (must come before style.css to allow overrides) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-
-  <!--
-    - custom css link
-  -->
+  <!-- Main CSS entry point — imports all split modules in order -->
   <link rel="stylesheet" href="./assets/css/style.css">
 
-  <!--
-    - google font link
-  -->
+  <!-- ── Icon & Font Libraries ───────────────────────── -->
+  <!-- FontAwesome icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Glegoo:wght@400;700&family=Jaini+Purva&family=Jersey+20&family=Monoton&family=Playwrite+ES:wght@100..400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik+Glitch&family=Tiny5&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <!-- ── Theme Flash Prevention ──────────────────────── -->
+  <!--
+    Runs synchronously before any CSS paints to apply the saved
+    theme token (data-theme="light") if one exists in localStorage.
+    This prevents a flash of the wrong theme on page load.
+    Logic is duplicated in theme-toggle.js for runtime toggle.
+  -->
   <script>
-    // Apply saved theme instantly to prevent flash of wrong theme
     (function() {
       var t = localStorage.getItem('portfolio-theme');
       if (t) document.documentElement.setAttribute('data-theme', t);
@@ -42,7 +86,12 @@
 </head>
 
 <body class="preloader-active">
-  <!-- Preloader Screen -->
+  <!-- ═══════════════════════════════════════════════════
+       PRELOADER — Full-screen loading overlay
+       Removed (opacity → 0 + pointer-events: none) by JS
+       once all assets (images, frames, fonts, map) load.
+       Controlled by: modules/preloader.js
+  ═══════════════════════════════════════════════════ -->
   <div id="preloader" class="preloader">
     <video id="preloader-bg-video" class="preloader-video" autoplay loop muted playsinline>
       Your browser does not support the video tag.
@@ -53,8 +102,16 @@
       <div class="loader-status"><span class="loader-label">Loading assets...</span> <span class="loader-percent">0%</span></div>
     </div>
   </div>
+  <!-- Toast notification stack (populated dynamically by showToast() in globals.js) -->
   <div id="toastContainer" class="toast-container"></div>
-  
+
+  <!-- ═══════════════════════════════════════════════════
+       BACKGROUND VIDEOS
+       Two looping ambient background videos, one per theme.
+       Sources are injected at runtime by modules/video-init.js
+       based on screen resolution (mobile / desktop / 4K).
+       Visibility is toggled by theme/light-mode.css.
+  ═══════════════════════════════════════════════════ -->
   <video id="bg-video-dark" class="bg-video" autoplay loop muted playsinline poster="./assets/images/matrix.webp">
     Your browser does not support the video tag.
   </video>
@@ -62,9 +119,15 @@
     Your browser does not support the video tag.
   </video>
   
-  <!--
-    - #SCROLLY CANVAS INTRO
-  -->
+  <!-- ═══════════════════════════════════════════════════
+       SCROLLY CANVAS INTRO  (#scrolly-container)
+       500vh scroll spacer that pins a <canvas> in the viewport
+       and plays a WebP frame-by-frame animation as the user
+       scrolls. Three text overlay panels fade in/out.
+       At 80% scroll: reveals .main (portfolio content).
+       At 100% scroll: hides itself and marks intro done.
+       Controlled by: modules/scrolly.js
+  ═══════════════════════════════════════════════════ -->
   <div id="scrolly-container" class="scrolly-container">
     <div class="scrolly-sticky">
       <canvas id="scrolly-canvas"></canvas>
@@ -82,15 +145,23 @@
     </div>
   </div>
 
-  <!--
-    - #MAIN
-  -->
+  <!-- ═══════════════════════════════════════════════════
+       MAIN — Portfolio Content Wrapper
+       Hidden during the scrolly intro (opacity: 0).
+       Revealed by JS adding .reveal-active then .intro-done.
+  ═══════════════════════════════════════════════════ -->
   <main>
     <div class="main">
 
-      <!--
-        - #SIDEBAR
-      -->
+      <!-- ───────────────────────────────────────────────
+           SIDEBAR  (<aside data-sidebar>)
+           Sticky profile panel containing: avatar, name SVG,
+           title badge, Show/Hide contacts toggle (mobile),
+           contacts list (email, phone, birthday, location),
+           and social media links.
+           Toggle logic: modules/sidebar.js
+           Nebula / name-draw animations: components/sidebar.css
+      ─────────────────────────────────────────────── -->
 
       <aside class="sidebar" data-sidebar>
 
@@ -243,16 +314,22 @@
 
 
 
-      <!--
-        - #main-content
-      -->
+      <!-- ───────────────────────────────────────────────
+           MAIN CONTENT — Right-side tab area
+           Contains the navbar and all five article tabs.
+           Tab switching: modules/navigation.js
+      ─────────────────────────────────────────────── -->
       
       <div class="main-content">
         <div class="Main-c">
 
-        <!--
-          - #NAVBAR
-        -->
+        <!-- ─────────────────────────────────────────────
+             NAVBAR  (<nav class="navbar">)
+             Tab navigation bar. Clicking a button hides the
+             current article and shows the matching one.
+             The sliding underline pill is appended by navbar.js.
+             Keyboard navigation: modules/keyboard-nav.js
+        ───────────────────────────────────────────── -->
 
         <nav class="navbar">
 
@@ -285,9 +362,16 @@
 
 
 
-        <!--
-          - #ABOUT
-        -->
+        <!-- ═══════════════════════════════════════════
+             TAB: ABOUT  (article[data-page="about"])
+             Sections inside:
+               • Hero intro — name, Typed.js role, dev image
+               • "Know More" <details> — typed paragraph reveal
+               • .service — 8 service cards (what I do)
+               • .footer + wave SVG
+             Typing animation: modules/typing-animation.js
+             3D tilt on cards: modules/tilt.js
+        ═══════════════════════════════════════════ -->
 
         <article class="about  active" data-page="about">
 
@@ -316,9 +400,7 @@
           </section>
 
 
-          <!--
-            - service
-          -->
+          <!-- What I do — 8 service cards -->
 
           <section class="service">
 
@@ -455,9 +537,14 @@
 
 
 
-        <!--
-          - #RESUME
-        -->
+        <!-- ═══════════════════════════════════════════
+             TAB: RESUME  (article[data-page="resume"])
+             Sections inside:
+               • Education timeline (BHU → Behala → school)
+               • Download CV button (links to assets/CV.pdf)
+               • .footer + wave SVG
+             Comet glow animation: modules/timeline-comet.js
+        ═══════════════════════════════════════════ -->
 
         <article class="resume" data-page="resume">
 
@@ -530,7 +617,7 @@
     <img src="./assets/images/ed.webp" alt="Education illustration" height="250" class="timeline-image">
 </div>
 
-          <!-- CV button container -->
+          <!-- CV download — opens PDF in a new tab -->
           <div class="cv-btn-container">
             <a href="./assets/CV.pdf" target="_blank" class="form-btn cv-btn">
               <i class="fa-solid fa-file-pdf"></i>
@@ -745,9 +832,18 @@
 
 
 
-        <!--
-          - #PORTFOLIO
-        -->
+        <!-- ═══════════════════════════════════════════
+             TAB: PROJECT  (article[data-page="project"])
+             Sections inside:
+               • .filter-list    — desktop category filter buttons
+               • .filter-select-box — mobile dropdown filter
+               • .project-list   — serpentine reel of project cards
+             Each .project-item carries data-* attributes:
+               data-description, data-tech, data-repo, data-live
+             Filter logic:   modules/portfolio-filter.js
+             Reel animation: modules/project-reel.js
+             Card modal:     modules/project-modal.js
+        ═══════════════════════════════════════════ -->
 
         <article class="portfolio" data-page="project">
 
@@ -1118,9 +1214,16 @@
 
 
 
-        <!--
-          - #CONTACT
-        -->
+        <!-- ═══════════════════════════════════════════
+             TAB: CONTACT  (article[data-page="contact"])
+             Sections inside:
+               • .mapbox     — Leaflet interactive map
+                               (initialised by modules/preloader.js)
+               • .contact-form — Name, email, message + Send btn
+                               Submitted via Web3Forms API fetch
+               • .footer + wave SVG
+             Form logic: modules/contact-form.js
+        ═══════════════════════════════════════════ -->
 
         <article class="contact" data-page="contact">
 
@@ -1175,20 +1278,17 @@
     
   </main>
 
-  <!-- Web3Forms integration is done natively in script.js via fetch API -->
+  <!-- Web3Forms integration is handled via fetch() in modules/contact-form.js -->
 
-
-  <!-- Matter.js Physics Engine -->
+  <!-- ═══════════════════════════════════════════════════
+       THIRD-PARTY LIBRARIES  (must load before custom JS)
+  ═══════════════════════════════════════════════════ -->
+  <!-- Matter.js — rigid-body physics engine used by modules/physics.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
 
-  <!--
-    - Leaflet JS link
-  -->
+  <!-- Leaflet.js — interactive map used on the Contact tab -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
-  <!--
-    - Typed.js library
-  -->
+  <!-- Typed.js — animated role-title typewriter on the About tab -->
   <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
 
   <!--
@@ -1220,13 +1320,15 @@
 
   <script src="./assets/js/script.js" defer></script>
 
-  <!--
-    - ionicon link
-  -->
+  <!-- Ionicons — web component icon library (ESM + nomodule fallback) -->
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
-  <!-- Theme Toggle Button -->
+  <!-- ─── UI Overlays (rendered above main content) ──────
+       These elements are outside <main> so they float on top
+       of all tab content via fixed / absolute positioning.
+  ──────────────────────────────────────────────────── -->
+  <!-- Dark / Light mode toggle pill — controlled by modules/theme-toggle.js -->
   <button id="theme-toggle" class="theme-toggle" aria-label="Toggle light/dark mode" title="Toggle theme">
     <div class="toggle-track">
       <span class="toggle-icon toggle-sun">
@@ -1239,7 +1341,7 @@
     </div>
   </button>
 
-  <!-- Project Detail Modal -->
+  <!-- Project detail lightbox — populated and opened by modules/project-modal.js -->
   <div class="project-modal-container" id="projectModalContainer">
     <div class="project-modal-overlay" id="projectModalOverlay"></div>
     <div class="project-modal" id="projectModal">
@@ -1286,10 +1388,10 @@
     </div>
   </div>
 
-  <!-- Toast notification container -->
+  <!-- Toast stack (active instance — the one inside <body> before </body>) -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- Floating Scroll Navigation Button -->
+  <!-- Floating scroll progress ring + up/down arrow — controlled by modules/scroll-btn.js -->
   <div id="scroll-nav-btn" class="scroll-nav-btn scroll-down">
     <svg class="progress-circle" width="56" height="56" viewBox="0 0 56 56">
       <circle class="progress-track" cx="28" cy="28" r="24" fill="none" stroke-width="4"></circle>
